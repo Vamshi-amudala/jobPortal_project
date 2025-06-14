@@ -78,7 +78,7 @@ public class AuthService {
             response.setMessage("Login successful");
             return response;
         } catch (Exception e) {
-            e.printStackTrace(); // log what went wrong
+            e.printStackTrace(); 
             throw new RuntimeException("Login failed");
         }
     }

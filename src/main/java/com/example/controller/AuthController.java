@@ -41,19 +41,19 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
     
-    public AuthResponseDto login(LoginDto dto, HttpServletRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto dto, HttpServletRequest request) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
         );
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
-        
-        // Save context to session
+
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
 
-        return new AuthResponseDto("Login successful", dto.getEmail());
+        return ResponseEntity.ok(new AuthResponseDto("Login successful", dto.getEmail()));
     }
 
     @PostMapping("/forgot-password")

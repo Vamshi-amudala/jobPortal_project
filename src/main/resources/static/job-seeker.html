@@ -1,0 +1,23 @@
+<!-- job-seeker.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Job Seeker Dashboard</title>
+</head>
+<body>
+  <h1>Welcome, Job Seeker!</h1>
+  <p>You can search and apply for jobs here.</p>
+  <ul>
+    <li><a href="#">Search Jobs</a></li>
+    <li><a href="#">My Applications</a></li>
+  </ul>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    function logout() {
+      fetch("/logout", { method: "POST" })
+        .then(() => window.location.href = "/login.html");
+    }
+  </script>
+</body>
+</html>

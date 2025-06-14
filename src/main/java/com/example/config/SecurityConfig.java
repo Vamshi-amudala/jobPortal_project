@@ -51,15 +51,19 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults()) // ✅ Use Basic Auth
+            .formLogin(form -> form
+                .loginPage("/login.html")
+                .permitAll()
+            )
             .exceptionHandling(ex -> ex
                 .accessDeniedHandler(accessDeniedHandler)
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Optional for REST APIs
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)); // ← key change
 
         return http.build();
     }
+
 }
 
 

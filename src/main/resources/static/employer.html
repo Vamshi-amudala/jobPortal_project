@@ -1,0 +1,23 @@
+<!-- employer.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employer Dashboard</title>
+</head>
+<body>
+  <h1>Welcome, Employer!</h1>
+  <p>You can post and manage jobs here.</p>
+  <ul>
+    <li><a href="#">Post Job</a></li>
+    <li><a href="#">View Applicants</a></li>
+  </ul>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    function logout() {
+      fetch("/logout", { method: "POST" })
+        .then(() => window.location.href = "/login.html");
+    }
+  </script>
+</body>
+</html>
