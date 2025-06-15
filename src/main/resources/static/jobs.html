@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Listings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 0;
+      padding: 0;
+      color: #0f172a;
+    }
+
+    header {
+      background: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      color: #4f46e5;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #4f46e5;
+      font-weight: 600;
+    }
+
+    .title-bar {
+      max-width: 1100px;
+      margin: 40px auto 20px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .title-bar h2 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .title-bar p {
+      font-size: 1.1rem;
+      color: #e0e7ff;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 200px;
+    }
+
+    .filter-group label {
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #f8fafc;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .filter-group button {
+      padding: 12px;
+      background: linear-gradient(135deg, #6366f1, #14b8a6);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .filter-group.full-width {
+      flex: 1 1 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .job-list {
+      max-width: 1100px;
+      margin: 0 auto 60px;
+      display: grid;
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    .job-card {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border-left: 6px solid #6366f1;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    .job-card h3 {
+      margin: 0 0 8px;
+      color: #1e293b;
+      font-size: 1.4rem;
+    }
+
+    .job-card p {
+      margin: 6px 0;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .apply-btn {
+      margin-top: 15px;
+      background: linear-gradient(135deg, #10b981, #14b8a6);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .apply-btn:hover {
+      background: linear-gradient(135deg, #059669, #0d9488);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Job Portal</h1>
+    <div class="nav">
+      <a href="/index.html">Home</a>
+      <a href="/job-seeker.html">Dashboard</a>
+      <a href="/applications.html">Applications</a>
+      <a href="/profile.html">Profile</a>
+      <a href="/resume-upload.html">Resume</a>
+      <a href="/login.html">Logout</a>
+    </div>
+  </header>
+
+  <div class="title-bar">
+    <h2>Explore Opportunities</h2>
+    <p>Search and filter to find jobs that fit your career path</p>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="searchTitle">Job Title</label>
+      <input type="text" id="searchTitle" placeholder="e.g. Developer, Designer">
+    </div>
+    <div class="filter-group">
+      <label for="searchLocation">Location</label>
+      <input type="text" id="searchLocation" placeholder="e.g. Bangalore, Remote">
+    </div>
+    <div class="filter-group">
+      <label for="searchCompany">Company</label>
+      <input type="text" id="searchCompany" placeholder="e.g. Infosys, Amazon">
+    </div>
+    <div class="filter-group">
+      <label for="sortSelect">Sort By</label>
+      <select id="sortSelect">
+        <option value="">Default</option>
+        <option value="salary-asc">Salary: Low to High</option>
+        <option value="salary-desc">Salary: High to Low</option>
+        <option value="exp-asc">Experience: Low to High</option>
+        <option value="exp-desc">Experience: High to Low</option>
+      </select>
+    </div>
+    <div class="filter-group full-width">
+      <button onclick="handleFilters()">🔍 Search Jobs</button>
+    </div>
+  </div>
+
+  <div class="job-list" id="jobList">
+    <!-- Jobs will be loaded here -->
+  </div>
+
+  <script>
+    async function fetchJobs(endpoint = '/api/jobs') {
+      try {
+        const res = await fetch(endpoint, { credentials: 'include' });
+        if (!res.ok) throw new Error('Network response was not ok');
+        const jobs = await res.json();
+        const list = document.getElementById('jobList');
+        list.innerHTML = '';
+
+        if (!jobs || jobs.length === 0) {
+          list.innerHTML = '<p style="color: white;">No jobs found.</p>';
+          return;
+        }
+
+        jobs.forEach(job => {
+          const div = document.createElement('div');
+          div.className = 'job-card';
+          div.innerHTML = `
+            <h3>${job.title}</h3>
+            <p><strong>Company:</strong> ${job.company}</p>
+            <p><strong>Location:</strong> ${job.location}</p>
+            <p><strong>Experience:</strong> ${job.exp} yrs</p>
+            <p><strong>Salary:</strong> ₹${job.salary}</p>
+            <button class="apply-btn" onclick="applyToJob('${job.title}')">Apply Now</button>
+          `;
+          list.appendChild(div);
+        });
+      } catch (error) {
+        console.error('Fetch error:', error);
+        document.getElementById('jobList').innerHTML = '<p style="color: white;">Failed to load jobs. Please check your connection or login status.</p>';
+      }
+    }
+
+    function applyToJob(title) {
+      window.location.href = `/resume-upload.html?jobTitle=${encodeURIComponent(title)}`;
+    }
+
+    function handleFilters() {
+      const title = document.getElementById('searchTitle').value.trim();
+      const location = document.getElementById('searchLocation').value.trim();
+      const company = document.getElementById('searchCompany').value.trim();
+      const sort = document.getElementById('sortSelect').value;
+
+      let query = '';
+
+      if (sort) {
+        const [sortBy, order] = sort.split('-');
+        query = `/api/jobs/sorted?sortBy=${encodeURIComponent(sortBy)}&order=${encodeURIComponent(order)}`;
+      } else {
+        const params = new URLSearchParams();
+        if (title) params.append('title', title);
+        if (location) params.append('location', location);
+        if (company) params.append('company', company);
+        query = `/api/jobs?${params.toString()}`;
+      }
+
+      fetchJobs(query);
+    }
+
+    // Confirm that the backend is not blocking this request. Also check browser dev tools for CORS issues or 403 errors.
+    window.addEventListener('load', () => fetchJobs());
+  </script>
+</body>
+</html>
