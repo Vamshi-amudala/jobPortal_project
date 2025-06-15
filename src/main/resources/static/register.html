@@ -1,77 +1,233 @@
+<!-- register.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | JobPortal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      height: 80px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #6366f1;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #475569;
+      font-weight: 500;
+    }
+    .header-buttons a {
+      margin-left: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .btn-login-header {
+      background: #fff;
+      border: 1px solid #64748b;
+      color: #475569;
+    }
+    .btn-register-header {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #fff;
+    }
+    .hero {
+  padding: 10px 20px 60px;
+  text-align: center;
+}
+    .hero-content h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .hero-content p {
+      font-size: 1.1rem;
+      color: #f3f4f6;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-box {
+      background: #fff;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #14b8a6);
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: 500;
+    }
+    .password-container {
+      position: relative;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 35px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <h2>User Registration</h2>
-    <form id="registerForm">
-        <label>Full Name:</label><br>
-        <input type="text" name="fullName" required><br><br>
+  <header id="header">
+    <div class="logo"><a href="index.html">Job Portal</a></div>
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="header-buttons">
+      <a href="login.html" class="btn-login-header">Login</a>
+      <a href="register.html" class="btn-register-header">Register</a>
+    </div>
+  </header>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" required><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-
-        <label>Role:</label><br>
-        <select name="role" required>
-            <option value="JOB_SEEKER">Job Seeker</option>
+  <section class="hero">
+    <div class="hero-content fade-up">
+      <h1>Create Your Account</h1>
+      <p>Register to start posting jobs or applying to the latest opportunities tailored for you.</p>
+      <form id="registerForm" class="form-box">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label for="role">Select Role</label>
+          <select id="role" name="role" required>
+            <option value="">-- Choose Role --</option>
             <option value="EMPLOYER">Employer</option>
-        </select><br><br>
+            <option value="JOB_SEEKER">Job Seeker</option>
+          </select>
+        </div>
+        <div class="form-group password-container">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Create a password" required />
+          <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+        </div>
+        <button type="submit" class="btn-primary">Register</button>
+        <p id="registerMessage" class="message"></p>
+      </form>
+    </div>
+  </section>
 
-        <button type="submit">Register</button>
-    </form>
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
 
-    <p id="registerMessage"></p>
+    function showMessage(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.style.color = type === 'success' ? 'green' : 'red';
+    }
 
-	<script>
-	    document.getElementById("registerForm").addEventListener("submit", async function(e) {
-	        e.preventDefault();
-	        const formData = new FormData(this);
-	        const payload = {
-	            fullName: formData.get("fullName"),
-	            email: formData.get("email"),
-	            password: formData.get("password"),
-	            role: formData.get("role")
-	        };
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const fullName = e.target.fullName.value.trim();
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value;
+      const role = e.target.role.value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
 
-	        try {
-	            const response = await fetch("/api/auth/register", {
-	                method: "POST",
-	                headers: {
-	                    "Content-Type": "application/json"
-	                },
-	                body: JSON.stringify(payload)
-	            });
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
 
-	            const message = await response.text();
-	            document.getElementById("registerMessage").textContent = message;
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, email, password, role })
+        });
 
-	            console.log("Status:", response.status);
-	            console.log("OK:", response.ok);
-	            console.log("Message:", message);
+        if (password.length < 6) {
+        showMessage('registerMessage', 'Password must be at least 6 characters.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register';
+        return;
+      }
 
-	            if (response.ok) {
-	                setTimeout(() => {
-	                    console.log("Redirecting...");
-	                    window.location.href = "login.html";
-	                }, 1000);
-	            } else {
-	                document.getElementById("registerMessage").style.color = "red";
-	            }
-
-	        } catch (err) {
-	            console.error("Error:", err);
-	            document.getElementById("registerMessage").textContent = "Something went wrong: " + err.message;
-	            document.getElementById("registerMessage").style.color = "red";
-	        }
-	    });
-	</script>
-
-
-	
+      if (response.ok) {
+          showMessage('registerMessage', 'Registration successful! Redirecting to login...', 'success');
+          e.target.reset();
+          setTimeout(() => {
+            if (role === 'EMPLOYER') {
+              window.location.href = '/employer.html';
+            } else if (role === 'JOB_SEEKER') {
+              window.location.href = '/job-seeker.html';
+            } else {
+              window.location.href = '/login.html';
+            }
+          }, 1500);
+        } else {
+          const error = await response.text();
+          showMessage('registerMessage', error || 'Registration failed.', 'error');
+        }
+      } catch (err) {
+        showMessage('registerMessage', 'An error occurred. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register';
+      }
+    });
+  </script>
 </body>
 </html>

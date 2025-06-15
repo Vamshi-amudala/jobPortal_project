@@ -1,259 +1,227 @@
+<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - Job Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | JobPortal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-      background-size: cover;
-      height: 100vh;
-      color: #fff;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
     }
-
     header {
-      position: fixed; top: 0; width: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 16px 40px;
-      display: flex; justify-content: space-between; align-items: center;
-      z-index: 1000;
+      height: 80px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    .logo {
-      font-size: 1.8rem; font-weight: 600;
-      color: #00b4d8;
-      cursor: pointer;
-    }
-    nav {
-      display: flex; gap: 24px;
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #6366f1;
     }
     nav a {
-      color: #ccc; text-decoration: none;
-      font-weight: 500; transition: 0.3s;
+      margin: 0 10px;
+      text-decoration: none;
+      color: #475569;
+      font-weight: 500;
     }
-    nav a:hover {
-      color: #00b4d8;
-    }
-    .btn-login-header, .btn-register-header {
-      padding: 6px 14px;
-      font-weight: 600;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 0.95rem;
+    .header-buttons a {
+      margin-left: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
     }
     .btn-login-header {
-      background: transparent;
-      border: 2px solid #00b4d8;
-      color: #00b4d8;
-    }
-    .btn-login-header:hover {
-      background-color: #00b4d8;
-      color: #fff;
+      background: #fff;
+      border: 1px solid #64748b;
+      color: #475569;
     }
     .btn-register-header {
-      background-color: #0077b6;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
       color: #fff;
-      margin-left: 12px;
     }
-    .btn-register-header:hover {
-      background-color: #023e8a;
+    .hero {
+      padding: 10px 20px 60px;
+      text-align: center;
     }
-
-    main {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding-top: 80px;
-      background: rgba(0, 0, 0, 0.5);
+    .hero-content h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
     }
-
-    .form-container {
-      background: rgba(255, 255, 255, 0.1);
+    .hero-content p {
+      font-size: 1.1rem;
+      color: #f3f4f6;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-box {
+      background: #fff;
       padding: 40px;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-      width: 100%;
       max-width: 400px;
-      position: relative;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-
-    .form-container h2 {
-      color: #ffffff;
-      margin-bottom: 24px;
-      font-weight: 600;
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
     }
-
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
     input {
       width: 100%;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #14b8a6);
+      border: none;
       padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #00b4d8;
-    }
-
-    .btn-submit {
       width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
+      border-radius: 6px;
+      color: #fff;
       font-size: 1rem;
       font-weight: bold;
-      background: linear-gradient(to right, #00b4d8, #0077b6);
-      color: #fff;
-      margin-top: 16px;
-      transition: background 0.3s ease;
       cursor: pointer;
     }
-
-    .btn-submit:hover {
-      background: linear-gradient(to right, #0096c7, #023e8a);
+    .message {
+      margin-top: 10px;
+      font-weight: 500;
     }
-
-    .error-message {
-      color: #ff6b6b;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-top: 12px;
+    .password-container {
+      position: relative;
     }
-
-    a {
-      color: #00b4d8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .bottom-links {
-      margin-top: 20px;
-      font-size: 0.9rem;
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 35px;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <header id="header">
+    <div class="logo"><a href="index.html">Job Portal</a></div>
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="header-buttons">
+      <a href="login.html" class="btn-login-header">Login</a>
+      <a href="register.html" class="btn-register-header">Register</a>
+    </div>
+  </header>
 
-<header>
-  <div class="logo" onclick="location.href='index.html'">JobPortal</div>
-  <nav>
-    <a href="index.html#home">Home</a>
-    <a href="index.html#about">About</a>
-    <a href="index.html#services">Services</a>
-    <a href="index.html#how">How It Works</a>
-    <a href="index.html#footer">Contact</a>
-  </nav>
-  <div>
-    <button class="btn-login-header" onclick="location.href='login.html'">Login</button>
-    <button class="btn-register-header" onclick="location.href='register.html'">Register</button>
-  </div>
-</header>
+  <section class="hero">
+    <div class="hero-content fade-up">
+      <h1>Access Your Account</h1>
+      <p>Log in to explore the latest job listings, track your applications, and manage your career profile effortlessly.</p>
+	  <form id="loginForm" class="form-box">
+	    <div class="form-group">
+	      <label for="email">Email</label>
+	      <input type="email" id="email" name="email" placeholder="Enter your email" required />
+	    </div>
+	    <div class="form-group password-container">
+	      <label for="password">Password</label>
+	      <input type="password" id="password" name="password" placeholder="Enter your password" required />
+	      <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+	    </div>
+	    <button type="submit" class="btn-primary">Sign In</button>
+	    <p id="loginMessage" class="message"></p>
+	    <p style="margin-top: 10px; text-align: center;">
+	      <a href="forgot-password.html" style="color: #6366f1; text-decoration: underline; font-weight: 500;">
+	        Forgot Password?
+	      </a>
+	    </p>
+	  </form>
+    </div>
+  </section>
 
-<main>
-  <div class="form-container">
-    <h2>Login to Your Account</h2>
-    <form id="loginForm">
-      <input type="email" id="email" name="email" placeholder="Email" required />
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
 
-      <div class="password-wrapper">
-        <input type="password" id="password" name="password" placeholder="Password" required />
-        <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
-      </div>
+    function showMessage(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.style.color = type === 'success' ? 'green' : 'red';
+    }
 
-      <button class="btn-submit" type="submit">Login</button>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
 
-      <div id="loginMessage" class="error-message"></div>
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing In...';
 
-      <div class="bottom-links">
-        <div style="text-align:right;">
-          <a href="forgot-password.html">Forgot Password?</a>
-        </div>
-        <div style="text-align:center; margin-top: 8px;">
-          Don't have an account? <a href="register.html">Register here</a>
-        </div>
-      </div>
-    </form>
-  </div>
-</main>
-<script>
-  const togglePassword = document.getElementById('togglePassword');
-  const password = document.getElementById('password');
-
-  togglePassword.addEventListener('click', () => {
-    const type = password.type === 'password' ? 'text' : 'password';
-    password.type = type;
-    togglePassword.classList.toggle('fa-eye-slash');
-  });
-
-  document.getElementById("loginForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const payload = {
-      email: formData.get("email"),
-      password: formData.get("password")
-    };
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        // Fetch user role after successful login
-        const res = await fetch("/api/dashboard-data", {
-          cache: "no-store",
-          credentials: "include"
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
         });
 
-        if (!res.ok) throw new Error("Failed to fetch user role");
+        if (response.ok) {
+          showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
 
-        const data = await res.json();
-        const role = data.role || data.roles?.[0]; // Handle single or array role
+          const res = await fetch('/api/dashboard-data', {
+            method: 'GET',
+            credentials: 'include'
+          });
 
-        if (role.includes("ROLE_EMPLOYER")) {
-          window.location.href = "/employer.html";
-        } else if (role.includes("ROLE_JOB_SEEKER")) {
-          window.location.href = "/job-seeker.html";
+          const data = await res.json();
+          const role = data.role || data.roles?.[0];
+
+          setTimeout(() => {
+            if (role && role.includes('ROLE_EMPLOYER')) {
+              window.location.href = '/employer.html';
+            } else if (role && role.includes('ROLE_JOB_SEEKER')) {
+              window.location.href = '/job-seeker.html';
+            } else {
+              window.location.href = '/dashboard.html';
+            }	
+          }, 1500);
+
         } else {
-          alert("Unknown role: " + role);
+          const error = await response.text();
+          showMessage('loginMessage', error || 'Login failed.', 'error');
         }
-      } else {
-        document.getElementById("loginMessage").textContent = "Invalid login credentials.";
+      } catch (err) {
+        showMessage('loginMessage', 'An er	ror occurred. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      document.getElementById("loginMessage").textContent = "Server error. Please try again later.";
-    }
-  });
-</script>
-
-
+    });
+  </script>
 </body>
 </html>
-
-
