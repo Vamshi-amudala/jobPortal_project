@@ -75,6 +75,30 @@ public class EmailService {
                     throw new RuntimeException("Failed to create offer letter file", e);
                 }
                 break;
+                
+        case UNDER_REVIEW:
+            body = "Dear " + candidateName + ",\n\n" +
+                   "We are pleased to inform you that your application for the position of \"" + jobTitle + "\" is currently under review and has moved to the next stage of our hiring process.\n\n" +
+                   "In the coming days, you will receive further instructions regarding the assessment and interview process. This may include an online test and a scheduled discussion with our technical team.\n\n" +
+                   "To ensure a smooth experience, please be prepared with a quiet workspace, a stable internet connection, and availability during standard business hours.\n\n" +
+                   "We appreciate your interest in the role and look forward to learning more about you.\n\n" +
+                   "Warm regards,\n" +
+                   "Recruitment Team\n" +
+                   "JobPortal";
+            break;
+
+            
+
+                
+        case WITHDRAWN:
+            body = "Dear " + candidateName + ",\n\n" +
+                   "This is to confirm that your application for the position of " + jobTitle + " has been withdrawn as per your request.\n\n" +
+                   "If this was done in error or you have any questions, please contact us at support@company.com.\n\n" +
+                   "Thank you for your interest.\n\n" +
+                   "Best regards,\n" +
+                   "Recruitment Team";
+            break;
+
 
         case REJECTED:
             body = "Dear " + candidateName + ",\n\n" +
@@ -100,7 +124,7 @@ public class EmailService {
 
             helper.setTo(toEmail);
             helper.setSubject(subject);
-            helper.setText(body);
+            helper.setText(body,false);
 
             if (attachment != null) {
                 helper.addAttachment(attachment.getFilename(), attachment);

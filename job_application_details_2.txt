@@ -1,0 +1,11 @@
+Job Application Details
+=======================
+Applicant Name: Vamshi Amudala
+Email: vamshiamudala126@gmail.com
+Phone: 63029042678
+Education: Master of Computer Applications
+
+Job Title: QA Engineer
+Company: Microsoft
+Location: Chennai
+Experience Required: 2

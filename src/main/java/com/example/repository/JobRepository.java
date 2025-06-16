@@ -12,7 +12,10 @@ import java.util.Optional;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
 
+  
+	
     List<Job> findByEmployer(User employer);
+
 
     List<Job> findByStatus(JobStatus status);
 

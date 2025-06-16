@@ -38,7 +38,7 @@ public class JobApplicationController {
         return ResponseEntity.ok(jobService.getMyAppliedJobs());
     }
 
-    @GetMapping
+    @GetMapping("/employer")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsForMyJobs() {
         return ResponseEntity.ok(jobService.getApplicationsForMyJobs());
@@ -78,5 +78,7 @@ public class JobApplicationController {
         JobApplicationResponse response = jobService.updateApplicationStatus(id, ApplicationStatus.WITHDRAWN);
         return ResponseEntity.ok(response);
     }
+    
+    
 
 }

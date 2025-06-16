@@ -22,6 +22,7 @@ public class JobController {
     private JobService jobService;
 
     @PostMapping("/multiple")
+    @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<Job>> addMultipleJobs(
         @RequestParam String email,
         @RequestBody List<Job> jobs) {
@@ -112,4 +113,6 @@ public class JobController {
         dto.setStatus(job.getStatus());
         return dto;
     }
+    
+    
 }

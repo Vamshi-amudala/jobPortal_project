@@ -37,41 +37,10 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/", "/index.html", "/register.html", "/login.html",
-                    "/api/auth/register", "/api/auth/login",
-                    "/api/auth/forgot-password", "/api/auth/reset-password",
-                    "/api/auth/send-otp", "/api/auth/reset-password-with-otp",
-                    "/swagger-ui/**", "/v3/api-docs/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login.html")
-                .permitAll()
-            )
-            .exceptionHandling(ex -> ex
-                .accessDeniedHandler(accessDeniedHandler)
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)); // ← key change
-
-        return http.build();
-    }
-
-}
-
-
-//
 //    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http
-//            .csrf().disable()
+//            .csrf(csrf -> csrf.disable())
 //            .authorizeHttpRequests(auth -> auth
 //                .requestMatchers(
 //                    "/", "/index.html", "/register.html", "/login.html",
@@ -83,16 +52,48 @@ public class SecurityConfig {
 //                .anyRequest().authenticated()
 //            )
 //            .formLogin(form -> form
-//                .loginPage("/login.html") // Set your actual login page
+//                .loginPage("/login.html")
 //                .permitAll()
 //            )
-//            .exceptionHandling(exception -> exception
+//            .exceptionHandling(ex -> ex
 //                .accessDeniedHandler(accessDeniedHandler)
 //            )
-//            .httpBasic(Customizer.withDefaults());
+//            .sessionManagement(session -> session
+//                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)); // ← key change
 //
 //        return http.build();
 //    }
+//
+//}
+
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/", "/index.html", "/register.html", "/login.html",
+                    "/api/auth/register", "/api/auth/login",
+                    "/api/auth/forgot-password", "/api/auth/reset-password",
+                    "/api/auth/send-otp", "/api/auth/reset-password-with-otp",
+                    "/swagger-ui/**", "/v3/api-docs/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login.html") // Set your actual login page
+                .permitAll()
+            )
+            .exceptionHandling(exception -> exception
+                .accessDeniedHandler(accessDeniedHandler)
+            )
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
     
+}
 
 
