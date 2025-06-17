@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Seeker Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f3f4f6;
+      display: flex;
+    }
+    .sidebar {
+      width: 240px;
+      background-color: #1e293b;
+      color: white;
+      padding-top: 20px;
+      height: 100vh;
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .sidebar button {
+      display: block;
+      width: 100%;
+      padding: 14px 24px;
+      background: none;
+      color: white;
+      border: none;
+      text-align: left;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background-color: #334155;
+    }
+    .logout-btn {
+      background-color: #ef4444;
+      margin-bottom: 10px;
+    }
+    .main-content {
+      margin-left: 240px;
+      padding: 40px;
+      width: 100%;
+    }
+    .section {
+      display: none;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .section.active {
+      display: block;
+    }
+    h3 {
+      color: #4f46e5;
+      margin-bottom: 20px;
+    }
+    .section p {
+      line-height: 1.6;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .edit-btn {
+      margin-top: 20px;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+	#editModal {
+	  display: none;
+	  position: fixed;
+	  inset: 0;
+	  background-color: rgba(0, 0, 0, 0.5);
+	  z-index: 999;
+	  align-items: center;
+	  justify-content: center;
+	}
+
+	#editModal .modal-content {
+	  background: white;
+	  padding: 25px;
+	  border-radius: 12px;
+	  width: 420px;
+	  max-height: 80vh;
+	  overflow-y: auto;
+	  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	}
+
+	#editModal input,
+	#editModal textarea {
+	  width: 100%;
+	  padding: 10px;
+	  margin-bottom: 12px;
+	  border-radius: 6px;
+	  border: 1px solid #cbd5e1;
+	  font-size: 0.95rem;
+	}
+
+	#editModal .modal-buttons {
+	  display: flex;
+	  justify-content: space-between;
+	  margin-top: 20px;
+	}
+
+	.modal-buttons button {
+	  padding: 10px 18px;
+	  border-radius: 6px;
+	  font-weight: bold;
+	  cursor: pointer;
+	  border: none;
+	}
+
+	.modal-buttons .save-btn {
+	  background-color: #4f46e5;
+	  color: white;
+	}
+
+	.modal-buttons .cancel-btn {
+	  background-color: #e5e7eb;
+	}
+
+    #projectsContainer input {
+      margin-bottom: 6px;
+    }
+    #projectsContainer button {
+      background: #e2e8f0;
+      border: none;
+      padding: 4px 8px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+	/* Skills list spacing */
+	#skillsList li {
+	  margin-bottom: 10px;
+	  padding: 6px 12px;
+	  background: #f1f5f9;
+	  border-radius: 6px;
+	  list-style-type: disc;
+	}
+
+	/* Projects list spacing */
+	#projectsList li {
+	  margin-bottom: 16px;
+	  padding: 10px 14px;
+	  background: #fef3c7;
+	  border-left: 4px solid #facc15;
+	  border-radius: 6px;
+	  list-style-type: none;
+	}
+
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div>
+      <h2>Job Seeker</h2>
+      <button onclick="showSection('personal')">👤 Personal Info</button>
+      <button onclick="showSection('skills')">🛠 Skills</button>
+      <button onclick="showSection('projects')">📂 Projects</button>
+      <button onclick="window.location.href='/job-seeker.html'">🏠 Dashboard</button>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <div class="main-content">
+    <div id="personal" class="section active">
+      <h3>Personal Information</h3>
+      <p><span class="label">Name:</span> <span id="fullName">-</span></p>
+      <p><span class="label">Email:</span> <span id="email">-</span></p>
+      <p><span class="label">Phone:</span> <span id="phone">-</span></p>
+      <p><span class="label">Address:</span> <span id="address">-</span></p>
+      <p><span class="label">Education:</span> <span id="education">-</span></p>
+      <p><span class="label">Experience:</span> <span id="exp">-</span></p>
+      <button class="edit-btn" onclick="openModal()">Edit Info</button>
+    </div>
+
+    <div id="skills" class="section">
+      <h3>Skills</h3>
+      <ul id="skillsList"></ul>
+    </div>
+
+    <div id="projects" class="section">
+      <h3>Projects</h3>
+      <ul id="projectsList"></ul>
+    </div>
+  </div>
+
+
+  <div id="editModal">
+    <div class="modal-content">
+      <h3 style="color:#4f46e5;">Edit Profile</h3>
+      <form id="editForm">
+        <input type="text" id="editFullName" placeholder="Full Name" required />
+        <input type="text" id="editPhone" placeholder="Phone" />
+        <input type="text" id="editAddress" placeholder="Address" />
+        <input type="text" id="editEducation" placeholder="Education" />
+        <input type="text" id="editExp" placeholder="Experience" />
+        <input type="text" id="editSkills" placeholder="Skills (comma-separated)" />
+
+        <div id="projectsContainer"></div>
+        <button type="button" onclick="addProjectField()" style="margin-bottom: 10px; background:#f3f4f6; border:none; padding:6px 12px; border-radius:6px; font-size: 0.9rem;">➕ Add Project</button>
+
+        <div class="modal-buttons">
+          <button type="submit" class="save-btn">💾 Save</button>
+          <button type="button" onclick="closeModal()" class="cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function logout() {
+      fetch("/logout", { method: "POST" }).then(() => window.location.href = "/login.html");
+    }
+
+    function openModal() {
+      document.getElementById("editModal").style.display = "flex";
+      document.getElementById("editFullName").value = document.getElementById("fullName").textContent;
+      document.getElementById("editPhone").value = document.getElementById("phone").textContent;
+      document.getElementById("editAddress").value = document.getElementById("address").textContent;
+      document.getElementById("editEducation").value = document.getElementById("education").textContent;
+      document.getElementById("editExp").value = document.getElementById("exp").textContent;
+
+      document.getElementById("projectsContainer").innerHTML = "";
+      fetch('/users/profile', { credentials: 'include' })
+        .then(res => res.json())
+        .then(user => {
+          document.getElementById("editSkills").value = (user.skills || []).join(', ');
+          (user.projects || []).forEach(addProjectField);
+        });
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").style.display = "none";
+    }
+
+    function addProjectField(project = {}) {
+      const container = document.getElementById("projectsContainer");
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = `
+        <input type="text" placeholder="Project Name" class="project-title" value="${project.projectName || ''}" required />
+        <input type="text" placeholder="Description" class="project-desc" value="${project.description || ''}" required />
+        <button type="button" onclick="this.parentElement.remove()">❌ Remove</button>
+      `;
+      wrapper.style.marginBottom = "15px";
+      container.appendChild(wrapper);
+    }
+
+    document.getElementById("editForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const updated = {
+        fullName: document.getElementById("editFullName").value,
+        phone: document.getElementById("editPhone").value,
+        address: document.getElementById("editAddress").value,
+        education: document.getElementById("editEducation").value,
+        exp: document.getElementById("editExp").value,
+        skills: document.getElementById("editSkills").value.split(',').map(s => s.trim()).filter(Boolean),
+        projects: []
+      };
+
+      const titles = document.querySelectorAll(".project-title");
+      const descs = document.querySelectorAll(".project-desc");
+
+      updated.projects = Array.from(titles).map((_, i) => ({
+        projectName: titles[i].value.trim(),
+        description: descs[i].value.trim()
+      })).filter(p => p.projectName && p.description);
+
+      fetch("/users/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(updated)
+      }).then(res => {
+        if (res.ok) {
+          alert("Profile updated!");
+          closeModal();
+          loadProfile();
+        } else {
+          alert("❌ Failed to update.");
+        }
+      }).catch(() => alert("❌ Network error."));
+    });
+
+    function loadProfile() {
+      fetch('/users/profile', { credentials: 'include' })
+        .then(res => res.ok ? res.json() : null)
+        .then(user => {
+          if (!user) return;
+          document.getElementById("fullName").textContent = user.fullName;
+          document.getElementById("email").textContent = user.email;
+          document.getElementById("phone").textContent = user.phone || "—";
+          document.getElementById("address").textContent = user.address || "—";
+          document.getElementById("education").textContent = user.education || "—";
+          document.getElementById("exp").textContent = user.exp || "—";
+
+          const skillList = document.getElementById("skillsList");
+          skillList.innerHTML = "";
+          (user.skills || []).forEach(skill => {
+            const li = document.createElement("li");
+            li.textContent = skill;
+            skillList.appendChild(li);
+          });
+
+          const projList = document.getElementById("projectsList");
+          projList.innerHTML = "";
+          (user.projects || []).forEach(p => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${p.projectName}</strong>: ${p.description}`;
+            projList.appendChild(li);
+          });
+        });
+    }
+
+    window.onload = loadProfile;
+  </script>
+</body>
+</html>

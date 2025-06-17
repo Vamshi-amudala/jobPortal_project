@@ -56,28 +56,14 @@ public class JobApplicationController {
     
     @PutMapping("/applied-jobs/{id}/withdraw")
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ResponseEntity<JobApplicationResponse> withdrawApplication(@PathVariable Long id, 
+    public ResponseEntity<JobApplicationResponse> withdrawApplication(
+            @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        JobApplication application = jobService.findApplicationById(id);
-        if (application == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        String loggedInEmail = userDetails.getUsername();
-        String applicantEmail = application.getApplicant().getEmail();
-
-        System.out.println("Logged in user email: " + loggedInEmail);
-        System.out.println("Applicant email on application: " + applicantEmail);
-
-        if (!applicantEmail.equalsIgnoreCase(loggedInEmail)) {
-            System.out.println("Email mismatch! Access forbidden.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        JobApplicationResponse response = jobService.updateApplicationStatus(id, ApplicationStatus.WITHDRAWN);
-        return ResponseEntity.ok(response);
+        String email = userDetails.getUsername();
+        return ResponseEntity.ok(jobApplicationService.withdrawApplication(id, email));
     }
+
     
     
 

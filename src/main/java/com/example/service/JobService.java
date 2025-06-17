@@ -85,27 +85,22 @@ public class JobService {
 	}
 
 	public Job updateJobStatus(Long id, JobStatus status) {
-		Job job = jobRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Job not found with ID: " + id));
+		Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job not found with ID: " + id));
 		job.setStatus(status);
 		return jobRepository.save(job);
 	}
 
-	public void updateStatus(Long applicationId, ApplicationStatus status) {
-		JobApplication app = jobRepo.findById(applicationId)
-				.orElseThrow(() -> new RuntimeException("Application not found"));
-		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
-			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
-		}
-		app.setStatus(status);
-		jobRepo.save(app);
-		emailService.sendApplicationStatusEmail(
-				app.getApplicant().getEmail(),
-				app.getJob().getTitle(),
-				app.getApplicant().getFullName(),
-				status
-		);
-	}
+//	public void updateStatus(Long applicationId, ApplicationStatus status) {
+//		JobApplication app = jobRepo.findById(applicationId)
+//				.orElseThrow(() -> new RuntimeException("Application not found"));
+//		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
+//			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
+//		}
+//		app.setStatus(status);
+//		jobRepo.save(app);
+//		emailService.sendApplicationStatusEmail(app.getApplicant().getEmail(), app.getJob().getTitle(),
+//				app.getApplicant().getFullName(), status);
+//	}
 
 	public List<Job> getAllJobs() {
 		return jobRepository.findByStatus(JobStatus.OPEN);
@@ -176,22 +171,20 @@ public class JobService {
 			throw new RuntimeException("Only the employer can update the application status");
 		}
 
-		if (application.getStatus() == ApplicationStatus.WITHDRAWN || application.getStatus() == ApplicationStatus.REJECTED) {
+		if (application.getStatus() == ApplicationStatus.WITHDRAWN
+				|| application.getStatus() == ApplicationStatus.REJECTED) {
 			throw new IllegalStateException("Cannot update application that is already " + application.getStatus());
 		}
-		if ((status == ApplicationStatus.SELECTED || status == ApplicationStatus.REJECTED)
-		        && application.getStatus() != ApplicationStatus.UNDER_REVIEW) {
-		    throw new IllegalStateException("Application must first be moved to UNDER_REVIEW before selecting or rejecting.");
+		if ((status == ApplicationStatus.SELECTED)
+				&& application.getStatus() != ApplicationStatus.UNDER_REVIEW) {
+			throw new IllegalStateException(
+					"Application must first be moved to UNDER_REVIEW before selecting or rejecting.");
 		}
 
 		application.setStatus(status);
 		JobApplication updated = jobRepo.save(application);
-		emailService.sendApplicationStatusEmail(
-				application.getApplicant().getEmail(),
-				application.getJob().getTitle(),
-				application.getApplicant().getFullName(),
-				status
-		);
+		emailService.sendApplicationStatusEmail(application.getApplicant().getEmail(), application.getJob().getTitle(),
+				application.getApplicant().getFullName(), status);
 		return toJobApplicationResponse(updated);
 	}
 
@@ -225,10 +218,14 @@ public class JobService {
 		String sortField = (sortBy != null) ? sortBy.toLowerCase() : "";
 		String sortOrder = (order != null) ? order.toLowerCase() : "asc";
 		switch (sortField) {
-			case "salary" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderBySalaryDesc() : jobRepository.findAllOrderBySalaryAsc();
-			case "exp" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderByExperienceDesc() : jobRepository.findAllOrderByExperienceAsc();
-			default -> jobs = jobRepository.findByStatus(JobStatus.OPEN);
+		case "salary" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderBySalaryDesc()
+				: jobRepository.findAllOrderBySalaryAsc();
+		case "exp" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderByExperienceDesc()
+				: jobRepository.findAllOrderByExperienceAsc();
+		default -> jobs = jobRepository.findByStatus(JobStatus.OPEN);
 		}
 		return jobs.stream().map(this::toDto).collect(Collectors.toList());
 	}
+	
+	
 }

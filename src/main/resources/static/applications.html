@@ -121,7 +121,7 @@
       if (!confirm('Are you sure you want to withdraw this application?')) return;
 
       try {
-        const res = await fetch(`/api/applications/${appId}/status`, {
+        const res = await fetch(`/api/applications/applied-jobs/${appId}/withdraw`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'WITHDRAWN' })

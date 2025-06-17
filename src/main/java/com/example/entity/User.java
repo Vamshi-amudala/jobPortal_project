@@ -41,6 +41,8 @@ public class User {
     @Column(name = "education")
     private String education;
     
+    private String exp;
+    
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "skill")
@@ -71,5 +73,6 @@ public class User {
     @Column(name = "designation") 
     private String designation;
 
+    private String resumeUrl;
 
 }

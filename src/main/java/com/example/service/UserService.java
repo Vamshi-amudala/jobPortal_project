@@ -82,37 +82,36 @@ public class UserService {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        user.setFullName(dto.getFullName());
-        user.setPhone(dto.getPhone());
-        user.setAddress(dto.getAddress());
-        user.setEducation(dto.getEducation());
+        if (dto.getFullName() != null) user.setFullName(dto.getFullName());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+        if (dto.getEducation() != null) user.setEducation(dto.getEducation());
+        if (dto.getExp() != null) user.setExp(dto.getExp());
 
         if (user.getRole() == Role.JOB_SEEKER) {
-        	if (dto.getSkills() != null && !dto.getSkills().isEmpty()) {
-        	    user.setSkills(dto.getSkills());
-        	}
-        	if (dto.getProjects() != null && !dto.getProjects().isEmpty()) {
-        	    user.setProjects(mapToEntityProjects(dto.getProjects()));
-        	}
-
+            if (dto.getSkills() != null) user.setSkills(dto.getSkills());
+            if (dto.getProjects() != null) user.setProjects(mapToEntityProjects(dto.getProjects()));
         } else if (user.getRole() == Role.EMPLOYER) {
-            user.setCompanyName(dto.getCompanyName());
-            user.setCompanyWebsite(dto.getCompanyWebsite());
-            user.setCompanyDescription(dto.getCompanyDescription());
-            user.setDesignation(dto.getDesignation());
+            if (dto.getCompanyName() != null) user.setCompanyName(dto.getCompanyName());
+            if (dto.getCompanyWebsite() != null) user.setCompanyWebsite(dto.getCompanyWebsite());
+            if (dto.getCompanyDescription() != null) user.setCompanyDescription(dto.getCompanyDescription());
+            if (dto.getDesignation() != null) user.setDesignation(dto.getDesignation());
         }
 
         userRepository.save(user);
         return mapToDto(user);
     }
 
+
  
     private UserProfileDto mapToDto(User user) {
         UserProfileDto dto = new UserProfileDto();
         dto.setFullName(user.getFullName());
+        dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
         dto.setAddress(user.getAddress());
         dto.setEducation(user.getEducation());
+        dto.setExp(user.getExp());
 
 
         if (user.getRole() == Role.JOB_SEEKER) {

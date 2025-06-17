@@ -24,8 +24,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobApplicationService {
 
-    @Value("${app.upload.dir:uploads/resumes/}")
-    private String uploadDir;
+//    @Value("${app.upload.dir:uploads/resumes/}")
+//    private String uploadDir;
 
     private final JobApplicationRepository applicationRepository;
     private final UserRepository userRepository;
@@ -75,22 +75,30 @@ public class JobApplicationService {
 //        request.setResumeUrl("/uploads/resumes/" + filename);
 //        return applyForJob(request);
 //    }
+    
+//    public JobApplicationResponse applyForJobWithFile(JobApplicationRequest request, MultipartFile resumeFile) {
+//        String filename = saveResumeFile(resumeFile);
+//        request.setResumeUrl("/uploads/resumes/" + filename);
+//        JobApplication savedApp = applyForJob(request);
+//        return toResponse(savedApp);
+//    }
 
-    private String saveResumeFile(MultipartFile file) {
-        try {
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path uploadPath = Paths.get(uploadDir);
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
-            return filename;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save resume file", e);
-        }
-    }
+//    private String saveResumeFile(MultipartFile file) {
+//        try {
+//            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+//            Path uploadPath = Paths.get(uploadDir);
+//
+//            if (!Files.exists(uploadPath)) {
+//                Files.createDirectories(uploadPath);
+//            }
+//
+//            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+//            return filename;
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to save resume file", e);
+//        }
+//    }
 
     private void sendConfirmationEmail(User applicant, Job job) {
         String subject = "Job Application Submitted";
@@ -179,5 +187,27 @@ public class JobApplicationService {
             email.sendSelectedEmail(app.getApplicant().getEmail(), app.getJob().getTitle(), app.getApplicant().getFullName());
         }
     }
+
+    
+    public JobApplicationResponse withdrawApplication(Long id, String email) {
+        JobApplication app = applicationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (!app.getApplicant().getEmail().equalsIgnoreCase(email)) {
+            throw new RuntimeException("You are not authorized to withdraw this application");
+        }
+
+        if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
+            throw new IllegalStateException("Application already " + app.getStatus());
+        }
+
+        app.setStatus(ApplicationStatus.WITHDRAWN);
+        applicationRepository.save(app);
+
+        return toResponse(app);
+    }
+
+
+
 
 }

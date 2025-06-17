@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Resume</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #4f46e5;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .back-link {
+      margin-top: 30px;
+      display: inline-block;
+      color: #4f46e5;
+      text-decoration: none;
+    }
+
+    /* Resume preview styling */
+    .resume-preview {
+      margin-top: 25px;
+      padding: 15px 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background-color: #f9fafb;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+      flex-direction: row;
+    }
+
+    .resume-preview.show {
+      display: flex;
+    }
+
+    .resume-icon {
+      font-size: 24px;
+      color: #4f46e5;
+    }
+
+    .resume-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .resume-filename {
+      font-weight: 600;
+      color: #374151;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .resume-view-link {
+      background-color: #4f46e5;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .resume-view-link:hover {
+      background-color: #3730a3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload Your Resume</h2>
+    <form id="resumeForm">
+      <input type="file" id="resumeFile" required />
+      <br>
+      <button type="submit">Upload</button>
+    </form>
+
+    <div id="resumeLink" class="resume-preview"></div>
+    <a href="/job-seeker.html" class="back-link">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    document.getElementById("resumeForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const file = document.getElementById("resumeFile").files[0];
+      if (!file) return alert("Please select a file");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      fetch("/api/resume/upload", {
+        method: "POST",
+        credentials: "include",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        loadResume();
+      })
+      .catch(() => alert("❌ Error uploading resume"));
+    });
+
+    function loadResume() {
+      fetch("/api/resume", { credentials: "include" })
+        .then(res => res.text())
+        .then(link => {
+          const container = document.getElementById("resumeLink");
+          if (link.includes("/uploads")) {
+            const fileName = link.split("/").pop();
+            container.innerHTML = `
+              <div class="resume-icon">📄</div>
+              <div class="resume-details">
+                <div class="resume-filename">${fileName}</div>
+              </div>
+              <a href="${link}" target="_blank" class="resume-view-link">View</a>
+            `;
+            container.classList.add("show");
+          } else {
+            container.innerHTML = `<span style="color: #ef4444;">${link}</span>`;
+            container.classList.remove("show");
+          }
+        });
+    }
+
+    window.onload = loadResume;
+  </script>
+</body>
+</html>

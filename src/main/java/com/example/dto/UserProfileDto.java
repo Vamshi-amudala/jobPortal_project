@@ -9,9 +9,11 @@ import lombok.Data;
 @Data
 public class UserProfileDto {
     private String fullName;
+    private String email;
     private String phone;
     private String address;
     private String education;
+    private String exp;
     private List<String> skills;  
     private List<ProjectDto> projects;
     
