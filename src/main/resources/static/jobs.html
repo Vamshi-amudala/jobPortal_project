@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Listings</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -154,119 +154,223 @@
     .apply-btn:hover {
       background: linear-gradient(135deg, #059669, #0d9488);
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .modal.flex {
+      display: flex;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ccc;
+      border-top: 3px solid #10b981;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Job Portal</h1>
-    <div class="nav">
-      <a href="/index.html">Home</a>
-      <a href="/job-seeker.html">Dashboard</a>
-      <a href="/applications.html">Applications</a>
-      <a href="/profile.html">Profile</a>
-      <a href="/resume-upload.html">Resume</a>
-      <a href="/login.html">Logout</a>
-    </div>
-  </header>
 
-  <div class="title-bar">
-    <h2>Explore Opportunities</h2>
-    <p>Search and filter to find jobs that fit your career path</p>
+<header>
+  <h1>Job Portal</h1>
+  <div class="nav">
+    <a href="/index.html">Home</a>
+    <a href="/job-seeker.html">Dashboard</a>
+    <a href="/applications.html">Applications</a>
+    <a href="/profile.html">Profile</a>
+    <a href="/resume-upload.html">Resume</a>
+    <a href="/login.html">Logout</a>
   </div>
+</header>
 
-  <div class="filters">
-    <div class="filter-group">
-      <label for="searchTitle">Job Title</label>
-      <input type="text" id="searchTitle" placeholder="e.g. Developer, Designer">
-    </div>
-    <div class="filter-group">
-      <label for="searchLocation">Location</label>
-      <input type="text" id="searchLocation" placeholder="e.g. Bangalore, Remote">
-    </div>
-    <div class="filter-group">
-      <label for="searchCompany">Company</label>
-      <input type="text" id="searchCompany" placeholder="e.g. Infosys, Amazon">
-    </div>
-    <div class="filter-group">
-      <label for="sortSelect">Sort By</label>
-      <select id="sortSelect">
-        <option value="">Default</option>
-        <option value="salary-asc">Salary: Low to High</option>
-        <option value="salary-desc">Salary: High to Low</option>
-        <option value="exp-asc">Experience: Low to High</option>
-        <option value="exp-desc">Experience: High to Low</option>
-      </select>
-    </div>
-    <div class="filter-group full-width">
-      <button onclick="handleFilters()">🔍 Search Jobs</button>
-    </div>
+<div class="title-bar">
+  <h2>Explore Opportunities</h2>
+  <p>Search and filter to find jobs that fit your career path</p>
+</div>
+
+<div class="filters">
+  <div class="filter-group">
+    <label for="searchTitle">Job Title</label>
+    <input type="text" id="searchTitle" placeholder="e.g. Developer, Designer">
   </div>
-
-  <div class="job-list" id="jobList">
-    <!-- Jobs will be loaded here -->
+  <div class="filter-group">
+    <label for="searchLocation">Location</label>
+    <input type="text" id="searchLocation" placeholder="e.g. Bangalore, Remote">
   </div>
+  <div class="filter-group">
+    <label for="searchCompany">Company</label>
+    <input type="text" id="searchCompany" placeholder="e.g. Infosys, Amazon">
+  </div>
+  <div class="filter-group">
+    <label for="sortSelect">Sort By</label>
+    <select id="sortSelect">
+      <option value="">Default</option>
+      <option value="salary-asc">Salary: Low to High</option>
+      <option value="salary-desc">Salary: High to Low</option>
+      <option value="exp-asc">Experience: Low to High</option>
+      <option value="exp-desc">Experience: High to Low</option>
+    </select>
+  </div>
+  <div class="filter-group full-width">
+    <button onclick="handleFilters()">🔍 Search Jobs</button>
+  </div>
+</div>
 
-  <script>
-    async function fetchJobs(endpoint = '/api/jobs') {
-      try {
-        const res = await fetch(endpoint, { credentials: 'include' });
-        if (!res.ok) throw new Error('Network response was not ok');
-        const jobs = await res.json();
-        const list = document.getElementById('jobList');
-        list.innerHTML = '';
+<div class="job-list" id="jobList"></div>
 
-        if (!jobs || jobs.length === 0) {
-          list.innerHTML = '<p style="color: white;">No jobs found.</p>';
-          return;
-        }
+<!-- Apply Modal -->
+<div id="applyModal" class="modal">
+  <div class="modal-content">
+    <h3>Apply for Job</h3>
+    <form id="applyForm">
+      <input type="hidden" id="applyJobTitle" />
+      <label for="fullName">Full Name:</label>
+      <input type="text" id="fullName" placeholder="Your full name" required />
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Your email address" required />
+      <label for="resumeUrl">Resume URL:</label>
+      <input type="text" id="resumeUrl" placeholder="Paste your resume URL" required />
+      <div style="margin-top: 15px;">
+        <button id="submitBtn" type="submit" style="background: #10b981; color: white;">Submit</button>
+        <span id="loadingSpinner" class="spinner" style="display: none;"></span>
+        <button type="button" onclick="closeModal()" style="margin-left: 10px;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-        jobs.forEach(job => {
-          const div = document.createElement('div');
-          div.className = 'job-card';
-          div.innerHTML = `
-            <h3>${job.title}</h3>
-            <p><strong>Company:</strong> ${job.company}</p>
-            <p><strong>Location:</strong> ${job.location}</p>
-            <p><strong>Experience:</strong> ${job.exp} yrs</p>
-            <p><strong>Salary:</strong> ₹${job.salary}</p>
-            <button class="apply-btn" onclick="applyToJob('${job.title}')">Apply Now</button>
-          `;
-          list.appendChild(div);
-        });
-      } catch (error) {
-        console.error('Fetch error:', error);
-        document.getElementById('jobList').innerHTML = '<p style="color: white;">Failed to load jobs. Please check your connection or login status.</p>';
+<script>
+  async function fetchJobs(endpoint = '/api/jobs') {
+    try {
+      const res = await fetch(endpoint, { credentials: 'include' });
+      const jobs = await res.json();
+      const list = document.getElementById('jobList');
+      list.innerHTML = '';
+
+      if (!jobs || jobs.length === 0) {
+        list.innerHTML = '<p style="color: white;">No jobs found.</p>';
+        return;
       }
+
+      jobs.forEach(job => {
+        const div = document.createElement('div');
+        div.className = 'job-card';
+        div.innerHTML = `
+          <h3>${job.title}</h3>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Experience:</strong> ${job.exp} yrs</p>
+          <p><strong>Salary:</strong> ₹${job.salary}</p>
+          <button class="apply-btn" onclick="openApplyModal('${job.title}')">Apply Now</button>
+        `;
+        list.appendChild(div);
+      });
+    } catch (error) {
+      console.error('Fetch error:', error);
+      document.getElementById('jobList').innerHTML = '<p style="color: white;">Failed to load jobs.</p>';
     }
+  }
 
-    function applyToJob(title) {
-      window.location.href = `/resume-upload.html?jobTitle=${encodeURIComponent(title)}`;
-    }
+  function openApplyModal(title) {
+    document.getElementById("applyJobTitle").value = title;
+    document.getElementById("fullName").value = '';
+    document.getElementById("email").value = '';
+    document.getElementById("resumeUrl").value = '';
+    document.getElementById("applyModal").classList.add("flex");
+  }
 
-    function handleFilters() {
-      const title = document.getElementById('searchTitle').value.trim();
-      const location = document.getElementById('searchLocation').value.trim();
-      const company = document.getElementById('searchCompany').value.trim();
-      const sort = document.getElementById('sortSelect').value;
+  function closeModal() {
+    document.getElementById("applyModal").classList.remove("flex");
+  }
 
-      let query = '';
+  document.getElementById("applyForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-      if (sort) {
-        const [sortBy, order] = sort.split('-');
-        query = `/api/jobs/sorted?sortBy=${encodeURIComponent(sortBy)}&order=${encodeURIComponent(order)}`;
+    const submitBtn = document.getElementById("submitBtn");
+    const spinner = document.getElementById("loadingSpinner");
+
+    submitBtn.disabled = true;
+    spinner.style.display = "inline-block";
+
+    const jobTitle = document.getElementById("applyJobTitle").value;
+    const fullName = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const resumeUrl = document.getElementById("resumeUrl").value;
+
+    try {
+      const res = await fetch("/api/applications/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ jobTitle, fullName, email, resumeUrl })
+      });
+
+      if (res.ok) {
+        alert("✅ Application submitted successfully!");
+        closeModal();
       } else {
-        const params = new URLSearchParams();
-        if (title) params.append('title', title);
-        if (location) params.append('location', location);
-        if (company) params.append('company', company);
-        query = `/api/jobs?${params.toString()}`;
+        const msg = await res.text();
+        alert("❌ Failed: " + msg);
       }
-
-      fetchJobs(query);
+    } catch (error) {
+      console.error("❌ Error submitting:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      submitBtn.disabled = false;
+      spinner.style.display = "none";
     }
+  });
 
-    // Confirm that the backend is not blocking this request. Also check browser dev tools for CORS issues or 403 errors.
-    window.addEventListener('load', () => fetchJobs());
-  </script>
+  function handleFilters() {
+    const title = document.getElementById("searchTitle").value.toLowerCase();
+    const location = document.getElementById("searchLocation").value.toLowerCase();
+    const company = document.getElementById("searchCompany").value.toLowerCase();
+    const sort = document.getElementById("sortSelect").value;
+
+    let url = "/api/jobs?";
+    if (title) url += `title=${title}&`;
+    if (location) url += `location=${location}&`;
+    if (company) url += `company=${company}&`;
+    if (sort) url += `sort=${sort}`;
+
+    fetchJobs(url);
+  }
+
+  window.onload = () => fetchJobs();
+</script>
 </body>
 </html>

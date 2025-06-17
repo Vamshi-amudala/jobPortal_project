@@ -9,6 +9,7 @@ import com.example.repository.JobRepository;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class JobApplicationService {
     private final EmailService email;
 
     public JobApplication applyForJob(JobApplicationRequest request) {
+    	 String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User applicant = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
