@@ -1,10 +1,12 @@
 package com.example.repository;
 
 import com.example.entity.JobApplication;
+import org.springframework.transaction.annotation.Transactional;
 import com.example.entity.User;
 import com.example.entity.ApplicationStatus;
 import com.example.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,6 +23,11 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     boolean existsByApplicantAndJob(User applicant, Job job);
 
     Optional<JobApplication> findByApplicantAndJob(User applicant, Job job);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM JobApplication ja WHERE ja.job = :job")
+    void deleteByJob(@Param("job") Job job);
 
 
 }

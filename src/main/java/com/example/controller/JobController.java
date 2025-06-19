@@ -76,6 +76,7 @@ public class JobController {
         return ResponseEntity.ok("Job deleted successfully");
     }
 
+
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobDto> updateJobStatus(@PathVariable Long id, @RequestParam JobStatus status) {

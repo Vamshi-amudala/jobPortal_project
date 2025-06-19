@@ -7,12 +7,14 @@ import com.example.entity.Job;
 import com.example.entity.JobApplication;
 import com.example.entity.JobStatus;
 import com.example.entity.User;
+import com.example.exception.ResourceNotFoundException;
 import com.example.repository.JobApplicationRepository;
 import com.example.repository.JobRepository;
 import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,10 +82,20 @@ public class JobService {
 		return jobRepository.save(job);
 	}
 
-	public void deleteJob(Long id) {
-		jobRepository.deleteById(id);
-	}
 
+	@Transactional
+	public void deleteJob(Long id) {
+	    Job job = jobRepository.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Job with ID " + id + " not found"));
+
+	    // Delete all job applications linked to this job
+	    jobRepo.deleteByJob(job);
+
+	    // Now delete the job
+	    jobRepository.delete(job);
+	}
+	
+	
 	public Job updateJobStatus(Long id, JobStatus status) {
 		Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job not found with ID: " + id));
 		job.setStatus(status);
