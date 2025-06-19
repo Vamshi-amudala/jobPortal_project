@@ -90,17 +90,17 @@ public class JobService {
 		return jobRepository.save(job);
 	}
 
-//	public void updateStatus(Long applicationId, ApplicationStatus status) {
-//		JobApplication app = jobRepo.findById(applicationId)
-//				.orElseThrow(() -> new RuntimeException("Application not found"));
-//		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
-//			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
-//		}
-//		app.setStatus(status);
-//		jobRepo.save(app);
-//		emailService.sendApplicationStatusEmail(app.getApplicant().getEmail(), app.getJob().getTitle(),
-//				app.getApplicant().getFullName(), status);
-//	}
+	public void updateStatus(Long applicationId, ApplicationStatus status) {
+		JobApplication app = jobRepo.findById(applicationId)
+				.orElseThrow(() -> new RuntimeException("Application not found"));
+		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
+			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
+		}
+		app.setStatus(status);
+		jobRepo.save(app);
+		emailService.sendApplicationStatusEmail(app.getApplicant().getEmail(), app.getJob().getTitle(),
+				app.getApplicant().getFullName(), status);
+	}
 
 	public List<Job> getAllJobs() {
 		return jobRepository.findByStatus(JobStatus.OPEN);

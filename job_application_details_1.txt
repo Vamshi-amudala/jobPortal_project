@@ -5,7 +5,7 @@ Email: vamshiamudala126@gmail.com
 Phone: 6302904268
 Education: Master of Computer Applications
 
-Job Title: Network Administrator
+Job Title: Penetration Tester
 Company: Microsoft
-Location: Kolkata
-Experience Required: 2
+Location: Hyderabad
+Experience Required: 4

@@ -8,6 +8,8 @@ import com.example.repository.JobApplicationRepository;
 import com.example.repository.JobRepository;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class JobApplicationService {
 
 //    @Value("${app.upload.dir:uploads/resumes/}")
 //    private String uploadDir;
+	@Autowired
+	private EmailService emailService;
+
 
     private final JobApplicationRepository applicationRepository;
     private final UserRepository userRepository;
@@ -206,8 +211,17 @@ public class JobApplicationService {
         app.setStatus(ApplicationStatus.WITHDRAWN);
         applicationRepository.save(app);
 
+
+        emailService.sendApplicationStatusEmail(
+            app.getApplicant().getEmail(),
+            app.getJob().getTitle(),
+            app.getApplicant().getFullName(), 
+            ApplicationStatus.WITHDRAWN
+        );
+
         return toResponse(app);
     }
+
 
 
 
