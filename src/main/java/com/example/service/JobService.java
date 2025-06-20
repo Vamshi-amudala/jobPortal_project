@@ -105,8 +105,8 @@ public class JobService {
 	public void updateStatus(Long applicationId, ApplicationStatus status) {
 		JobApplication app = jobRepo.findById(applicationId)
 				.orElseThrow(() -> new RuntimeException("Application not found"));
-		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
-			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
+		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED  || app.getStatus() == ApplicationStatus.SELECTED) {
+			throw new IllegalStateException("Cannot change status of withdrawn/rejected/selected applications.");
 		}
 		app.setStatus(status);
 		jobRepo.save(app);
