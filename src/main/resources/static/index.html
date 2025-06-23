@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JobPortal - Find Your Dream Career</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #a5b4fc;
+      --secondary: #ec4899;
+      --secondary-dark: #db2777;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --warning: #f59e0b;
+      --purple: #8b5cf6;
+      --teal: #14b8a6;
+      --orange: #f97316;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --pink: #f472b6;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --shadow-colored: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+      --shadow-pink: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+      --shadow-green: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+    }
+    
+    html { 
+      scroll-padding-top: 80px; 
+      scroll-behavior: smooth; 
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    
+    header.scrolled {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    nav {
+      display: flex;
+      gap: 32px;
+      font-weight: 500;
+    }
+    
+    nav a {
+      color: var(--gray-600);
+      text-decoration: none;
+      font-size: 0.95rem;
+      position: relative;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    
+    nav a:hover {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    nav a.active {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 1px;
+    }
+    
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn-header {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid var(--gray-300);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-login-header {
+      background: var(--white);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+    
+    .btn-login-header:hover {
+      background: var(--gray-50);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    
+    .btn-register-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      border: 1px solid transparent;
+    }
+    
+    .btn-register-header:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-colored);
+    }
+    
+    /* Hero Section */
+    .hero {
+      padding: 210px 40px 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="300" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><circle cx="800" cy="800" r="200" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><circle cx="500" cy="600" r="150" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+      background-size: 1000px 1000px;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
+      color: var(--white);
+      border: 1px solid transparent;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--accent-dark) 0%, var(--teal) 100%);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-green);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Section Styles */
+    .section {
+      padding: 80px 40px;
+      position: relative;
+    }
+    
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .section-header h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+    
+    .section-header p {
+      font-size: 1.125rem;
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* About Section */
+    #about {
+      background: linear-gradient(135deg, var(--gray-50) 0%, rgba(99, 102, 241, 0.05) 100%);
+    }
+    
+    /* Services Section */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .service-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .service-card:nth-child(1) {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+    }
+    
+    .service-card:nth-child(2) {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(20, 184, 166, 0.05) 100%);
+    }
+    
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+      border-color: transparent;
+    }
+    
+    .service-card:nth-child(1):hover {
+      box-shadow: var(--shadow-colored);
+    }
+    
+    .service-card:nth-child(2):hover {
+      box-shadow: var(--shadow-green);
+    }
+    
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .service-card:nth-child(2)::before {
+      background: linear-gradient(90deg, var(--accent), var(--teal));
+    }
+    
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .service-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 12px;
+    }
+    
+    .service-card p {
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+    
+    /* Features Section */
+    .features {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-top: 40px;
+    }
+    
+    .feature-item {
+      text-align: center;
+      padding: 20px;
+      background: var(--white);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      border: 1px solid var(--gray-200);
+    }
+    
+    .feature-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-item:nth-child(1) .feature-icon {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+    
+    .feature-item:nth-child(2) .feature-icon {
+      background: linear-gradient(135deg, var(--warning) 0%, var(--orange) 100%);
+    }
+    
+    .feature-item:nth-child(3) .feature-icon {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
+    }
+    
+    .feature-item:nth-child(4) .feature-icon {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+    }
+    
+    .feature-item h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 12px;
+    }
+    
+    .feature-item p {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+    }
+    
+    /* Stats Section */
+    .stats {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--purple) 100%);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stats::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-size: 100px 100px;
+      animation: sparkle 15s linear infinite;
+    }
+    
+    @keyframes sparkle {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(-100px) translateY(-100px); }
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .stat-item {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .stat-item h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .stat-item p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    /* FAQ Section */
+    .faq {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+    }
+    
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .faq-item {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .faq-item:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .faq-question {
+      padding: 20px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, transparent 0%, rgba(99, 102, 241, 0.02) 100%);
+    }
+    
+    .faq-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--white);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .faq-item.active .faq-toggle {
+      transform: rotate(45deg);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--teal) 100%);
+    }
+    
+    .faq-answer {
+      padding: 0 24px 20px;
+      color: var(--gray-600);
+      line-height: 1.6;
+      display: none;
+      background: rgba(99, 102, 241, 0.02);
+    }
+    
+    .faq-item.active .faq-answer {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+      color: var(--gray-300);
+      padding: 60px 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .footer-content h3 {
+      color: var(--white);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .footer-content p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    
+    .footer-content a {
+      color: var(--primary-light);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-content a:hover {
+      color: var(--white);
+    }
+    
+    .footer-bottom {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-800);
+      text-align: center;
+      color: var(--gray-400);
+      font-size: 0.9rem;
+    }
+    
+    /* Animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      header { padding: 0 20px; }
+      .hero { 
+        padding: 120px 20px 60px; 
+        background-attachment: scroll;
+      }
+      .section { padding: 60px 20px; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <div class="logo"><a href="index.html">Job Portal</a></div>
+    <nav>
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="header-buttons">
+      <a href="login.html" class="btn-header btn-login-header">Login</a>
+      <a href="register.html" class="btn-header btn-register-header">Register</a>
+    </div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-content fade-up">
+      <h1>Find Your Dream Career</h1>
+      <p>Connect with top employers and discover opportunities that match your skills and ambitions. Your next career move starts here.</p>
+      <div class="hero-buttons">
+        <a href="login.html" class="btn-primary">Browse Jobs</a>
+        <a href="register.html" class="btn-secondary">Create Account</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="section-container">
+      <div class="section-header fade-up">
+        <h2>About JobPortal</h2>
+        <p>We're a leading job search platform connecting talented professionals with innovative companies worldwide.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="section">
+    <div class="section-container">
+      <div class="section-header fade-up">
+        <h2>Our Services</h2>
+        <p>Comprehensive solutions for both job seekers and employers</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-up">
+          <h3>For Job Seekers</h3>
+          <p>Access thousands of job listings, create professional profiles, get personalized recommendations, and connect directly with hiring managers.</p>
+        </div>
+        <div class="service-card fade-up">
+          <h3>For Employers</h3>
+          <p>Post job openings, search our talent database, manage applications efficiently, and find the perfect candidates for your team.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section features">
+    <div class="section-container">
+      <div class="section-header fade-up">
+        <h2>Why Choose JobPortal</h2>
+        <p>Powerful features designed to make job searching and hiring simple and effective</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item fade-up">
+          <div class="feature-icon">🎯</div>
+          <h3>Smart Matching</h3>
+          <p>AI-powered algorithm matches you with relevant opportunities based on your skills and preferences.</p>
+        </div>
+        <div class="feature-item fade-up">
+          <div class="feature-icon">⚡</div>
+          <h3>Quick Apply</h3>
+          <p>Apply to multiple jobs with one click using your saved profile and documents.</p>
+        </div>
+        <div class="feature-item fade-up">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure Platform</h3>
+          <p>Your personal information is protected with industry-standard security measures.</p>
+        </div>
+        <div class="feature-item fade-up">
+          <div class="feature-icon">📊</div>
+          <h3>Real-time Updates</h3>
+          <p>Get instant notifications about new jobs, application status, and employer responses.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section stats">
+    <div class="section-container">
+      <div class="stats-grid fade-up">
+        <div class="stat-item">
+          <h3>50K+</h3>
+          <p>Active Jobs</p>
+        </div>
+        <div class="stat-item">
+          <h3>100K+</h3>
+          <p>Registered Users</p>
+        </div>
+        <div class="stat-item">
+          <h3>5K+</h3>
+          <p>Companies</p>
+        </div>
+        <div class="stat-item">
+          <h3>95%</h3>
+          <p>Success Rate</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section faq">
+    <div class="section-container">
+      <div class="section-header fade-up">
+        <h2>Frequently Asked Questions</h2>
+        <p>Find answers to common questions about our platform</p>
+      </div>
+      <div class="faq-container">
+        <div class="faq-item fade-up">
+          <div class="faq-question">
+            How do I create an account?
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            Click the "Register" button in the top right corner, fill out the form with your details, and verify your email address to get started.
+          </div>
+        </div>
+
+        <div class="faq-item fade-up">
+          <div class="faq-question">
+            Is JobPortal free to use?
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            Yes, creating an account and searching for jobs is completely free. We also offer premium features for enhanced job search capabilities.
+          </div>
+        </div>
+
+        <div class="faq-item fade-up">
+          <div class="faq-question">
+            How do I apply for jobs?
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            Browse job listings, click on positions that interest you, and use the "Apply Now" button. You can apply with your saved profile or upload specific documents.
+          </div>
+        </div>
+
+        <div class="faq-item fade-up">
+          <div class="faq-question">
+            Can employers contact me directly?
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-answer">
+            Yes, employers can reach out to you through our secure messaging system if your profile matches their requirements.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="footer-content fade-up">
+      <h3>Contact Us</h3>
+      <p>Email: <a href="mailto:jobloomhq@gmail.com">jobloomhq@gmail.com</a></p>
+      <p>Phone: +91 8464050544</p>
+      <p>Address: 4-32/7, Patel Nagar, Hyderabad, Telangana, India</p>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 JobPortal. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Header scroll effect
+    function handleScroll() {
+      const header = document.getElementById('header');
+      if (window.scrollY > 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }
+    
+    // Fade in animation
+    function animateOnScroll() {
+      const elements = document.querySelectorAll('.fade-up');
+      elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('visible');
+        }
+      });
+    }
+    
+    // FAQ toggle
+    function setupFAQ() {
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          
+          // Close all FAQ items
+          document.querySelectorAll('.faq-item').forEach(faq => {
+            faq.classList.remove('active');
+            faq.querySelector('.faq-toggle').textContent = '+';
+          });
+          
+          // Open clicked item if it wasn't active
+          if (!isActive) {
+            item.classList.add('active');
+            item.querySelector('.faq-toggle').textContent = '×';
+          }
+        });
+      });
+    }
+    
+    // Active nav link
+    function updateActiveNav() {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('nav a');
+      
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    }
+    
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      setupFAQ();
+      animateOnScroll();
+      updateActiveNav();
+      
+      // Trigger initial animation
+      setTimeout(() => {
+        document.querySelector('.hero .fade-up').classList.add('visible');
+      }, 300);
+    });
+    
+    // Event listeners
+    window.addEventListener('scroll', () => {
+      handleScroll();
+      animateOnScroll();
+      updateActiveNav();
+    });
+    
+    // Smooth scroll for navigation
+    document.querySelectorAll('nav a, .hero-buttons a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

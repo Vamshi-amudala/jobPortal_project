@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Employer Profile</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+	<style>
+		body {
+			margin: 0;
+			font-family: 'Inter', sans-serif;
+			background: #f3f4f6;
+			display: flex;
+		}
+
+		.sidebar {
+			width: 220px;
+			background-color: #1e293b;
+			color: white;
+			padding-top: 20px;
+			height: 100vh;
+			position: fixed;
+		}
+
+		.sidebar h2 {
+			text-align: center;
+			font-size: 1.4rem;
+			margin-bottom: 20px;
+		}
+
+		.sidebar button {
+			display: block;
+			width: 100%;
+			padding: 12px 20px;
+			background: none;
+			color: white;
+			border: none;
+			text-align: left;
+			font-size: 1rem;
+			cursor: pointer;
+		}
+
+		.sidebar button:hover {
+			background-color: #334155;
+		}
+
+		.logout-btn {
+			position: absolute;
+			bottom: 20px;
+			width: 100%;
+			background-color: #ef4444;
+		}
+
+		.main-content {
+			margin-left: 220px;
+			padding: 40px;
+			width: 100%;
+		}
+
+		.section {
+			display: none;
+			background-color: white;
+			padding: 30px;
+			border-radius: 12px;
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+		}
+
+		.section.active {
+			display: block;
+		}
+
+		h3 {
+			color: #4f46e5;
+			margin-bottom: 20px;
+		}
+
+		.section p {
+			line-height: 1.6;
+			font-size: 0.96rem;
+		}
+
+		.label {
+			font-weight: 600;
+			color: #334155;
+		}
+
+		.edit-btn {
+			margin-top: 20px;
+			background-color: #4f46e5;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 8px;
+			cursor: pointer;
+		}
+
+		/* Modal */
+		#editModal {
+			display: none;
+			position: fixed;
+			inset: 0;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 999;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#editModal .modal-content {
+			background: white;
+			padding: 30px;
+			border-radius: 12px;
+			width: 500px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		}
+
+		#editModal input {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 15px;
+			border-radius: 6px;
+			border: 1px solid #cbd5e1;
+		}
+
+		#editModal button {
+			padding: 10px 16px;
+			font-weight: bold;
+			border: none;
+			border-radius: 6px;
+			margin-right: 10px;
+		}
+
+		#editModal .save-btn {
+			background: #4f46e5;
+			color: white;
+		}
+
+		#editModal .cancel-btn {
+			background: #e2e8f0;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="sidebar">
+		<h2>Employer Panel</h2>
+		<button onclick="showSection('personal')">👤 Personal Info</button>
+		<button onclick="showSection('company')">🏢 Company Info</button>
+		<button onclick="window.location.href='/employer.html'">🏠 Dashboard</button>
+		<button class="logout-btn" onclick="logout()">Logout</button>
+	</div>
+
+	<div class="main-content">
+		<div id="personal" class="section active">
+			<h3>Personal Information</h3>
+			<p><span class="label">Full Name:</span> <span id="fullName">-</span></p>
+			<p><span class="label">Email:</span> <span id="email">-</span></p>
+			<p><span class="label">Phone:</span> <span id="phone">-</span></p>
+			<p><span class="label">Address:</span> <span id="address">-</span></p>
+			<p><span class="label">Education:</span> <span id="education">-</span></p>
+			<button class="edit-btn" onclick="openModal()">✏️ Edit Info</button>
+		</div>
+
+		<div id="company" class="section">
+			<h3>Company Information</h3>
+			<p><span class="label">Company Name:</span> <span id="companyName">-</span></p>
+			<p><span class="label">Website:</span> <span id="companyWebsite">-</span></p>
+			<p><span class="label">Description:</span> <span id="companyDescription">-</span></p>
+			<p><span class="label">Designation:</span> <span id="designation">-</span></p>
+		</div>
+	</div>
+
+
+
+	<!-- Modal for Editing -->
+	<div id="editModal">
+		<div class="modal-content">
+			<h3 style="color:#4f46e5;">Update Company & Personal Info</h3>
+			<form id="editForm">
+				<input type="text" id="editFullName" placeholder="Full Name" />
+				<input type="text" id="editPhone" placeholder="Phone" />
+				<input type="text" id="editAddress" placeholder="Address" />
+				<input type="text" id="editEducation" placeholder="Education" />
+				<input type="text" id="editDesignation" placeholder="Designation" />
+				<input type="text" id="editCompanyName" placeholder="Company Name" />
+				<input type="text" id="editCompanyWebsite" placeholder="Company Website" />
+				<input type="text" id="editCompanyDescription" placeholder="Company Description" />
+				<button type="submit" class="save-btn">Save</button>
+				<button type="button" onclick="closeModal()" class="cancel-btn">Cancel</button>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		function showSection(id) {
+			document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+			document.getElementById(id).classList.add('active');
+		}
+
+		function logout() {
+			fetch("/logout", {method: "POST"}).then(() => window.location.href = "/login.html");
+		}
+
+		function openModal() {
+			document.getElementById("editModal").style.display = "flex";
+
+			// Pre-fill form fields
+			document.getElementById("editFullName").value = document.getElementById("fullName").textContent;
+			document.getElementById("editPhone").value = document.getElementById("phone").textContent;
+			document.getElementById("editAddress").value = document.getElementById("address").textContent;
+			document.getElementById("editEducation").value = document.getElementById("education").textContent;
+			document.getElementById("editDesignation").value = document.getElementById("designation").textContent;
+			document.getElementById("editCompanyName").value = document.getElementById("companyName").textContent;
+			document.getElementById("editCompanyWebsite").value = document.getElementById("companyWebsite").textContent;
+			document.getElementById("editCompanyDescription").value = document.getElementById("companyDescription").textContent;
+		}
+
+		function closeModal() {
+			document.getElementById("editModal").style.display = "none";
+		}
+
+		document.getElementById("editForm").addEventListener("submit", function (e) {
+			e.preventDefault();
+			const payload = {
+				fullName: document.getElementById("editFullName").value,
+				phone: document.getElementById("editPhone").value,
+				address: document.getElementById("editAddress").value,
+				education: document.getElementById("editEducation").value,
+				designation: document.getElementById("editDesignation").value,
+				companyName: document.getElementById("editCompanyName").value,
+				companyWebsite: document.getElementById("editCompanyWebsite").value,
+				companyDescription: document.getElementById("editCompanyDescription").value
+			};
+
+			fetch('/users/profile', {
+				method: 'PUT',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(payload),
+				credentials: 'include'
+			})
+				.then(res => {
+					if (res.ok) {
+						alert("✅ Profile updated!");
+						closeModal();
+						loadProfile();
+					} else {
+						alert("❌ Failed to update profile.");
+					}
+				})
+				.catch(() => alert("❌ Error updating profile."));
+		});
+
+		function loadProfile() {
+			fetch('/users/profile', {credentials: 'include'})
+				.then(res => res.ok ? res.json() : null)
+				.then(data => {
+					if (!data) return;
+					document.getElementById("companyName").textContent = data.companyName || "—";
+					document.getElementById("companyWebsite").textContent = data.companyWebsite || "—";
+					document.getElementById("companyDescription").textContent = data.companyDescription || "—";
+					document.getElementById("designation").textContent = data.designation || "—";
+					document.getElementById("fullName").textContent = data.fullName || "—";
+					document.getElementById("email").textContent = data.email || "—";
+					document.getElementById("phone").textContent = data.phone || "—";
+					document.getElementById("address").textContent = data.address || "—";
+					document.getElementById("education").textContent = data.education || "—";
+				})
+				.catch(() => alert("❌ Failed to load profile"));
+		}
+
+		window.onload = loadProfile;
+	</script>
+</body>
+
+</html>

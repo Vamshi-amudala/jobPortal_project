@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Job</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 720px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #4f46e5;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 20px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: #f8fafc;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #4338ca;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #64748b;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Edit Job</h2>
+    <form id="editJobForm">
+      <label for="title">Job Title</label>
+      <input type="text" id="title" name="title" required />
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="5" required></textarea>
+
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" required />
+
+      <label for="company">Company</label>
+      <input type="text" id="company" name="company" required />
+
+      <label for="exp">Experience (Years)</label>
+      <input type="number" id="exp" name="exp" min="0" required />
+
+      <label for="salary">Salary (₹)</label>
+      <input type="number" id="salary" name="salary" min="0" required />
+
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="OPEN">OPEN</option>
+        <option value="CLOSED">CLOSED</option>
+      </select>
+
+      <button type="submit">Update Job</button>
+      <a class="back-link" href="/my-jobs.html">← Back to My Jobs</a>
+    </form>
+  </div>
+
+  <script>
+    const jobId = new URLSearchParams(window.location.search).get("id");
+
+    if (!jobId) {
+      alert("Invalid job ID");
+      window.location.href = "/my-jobs.html";
+    }
+
+    fetch(`/api/jobs/my`)
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(jobs => {
+        const job = jobs.find(j => j.id == jobId);
+        if (!job) {
+          alert("Job not found");
+          window.location.href = "/my-jobs.html";
+        }
+
+        document.getElementById("title").value = job.title;
+        document.getElementById("description").value = job.description;
+        document.getElementById("location").value = job.location;
+        document.getElementById("company").value = job.company;
+        document.getElementById("exp").value = job.exp;
+        document.getElementById("salary").value = job.salary;
+        document.getElementById("status").value = job.status;
+      });
+
+    document.getElementById("editJobForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const jobData = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        location: document.getElementById("location").value,
+        company: document.getElementById("company").value,
+        exp: parseInt(document.getElementById("exp").value),
+        salary: parseFloat(document.getElementById("salary").value),
+        status: document.getElementById("status").value
+      };
+
+      fetch(`/api/jobs/${jobId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(jobData)
+      })
+        .then(res => {
+          if (res.ok) {
+            alert("✅ Job updated successfully!");
+            window.location.href = "/my-jobs.html";
+          } else {
+            alert("❌ Failed to update job.");
+          }
+        });
+    });
+  </script>
+</body>
+</html>
