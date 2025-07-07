@@ -260,22 +260,6 @@
 
 			<button type="submit" id="singleSubmit">Post Job</button>
 		</form>
-
-		<div class="multiple-section">
-			<h2>Post Multiple Jobs (Bulk)</h2>
-			<form id="multiJobForm">
-				<label>Email</label>
-				<input type="email" id="email" placeholder="Your Email (for identification)" required />
-
-				<label>Paste JSON array of jobs</label>
-				<textarea id="bulkJobs" rows="6" placeholder='[
-  {"title":"Backend Developer", "description":"Node + Spring", "location":"Remote", "company":"TechX", "exp":2, "salary":60000},
-  {"title":"QA Tester", "description":"Manual + Selenium", "location":"Hyderabad", "company":"TestCorp", "exp":1, "salary":40000}
-]'></textarea>
-
-				<button type="submit" id="multiSubmit">Post Multiple Jobs</button>
-			</form>
-		</div>
 	</div>
 
 	<script>
@@ -350,22 +334,6 @@
 
 			const email = document.getElementById("email").value;
 
-			fetch(`/api/jobs/multiple?email=${encodeURIComponent(email)}`, {
-				method: "POST",
-				headers: {"Content-Type": "application/json"},
-				credentials: "include",
-				body: JSON.stringify(jobs)
-			})
-				.then(res => {
-					if (!res.ok) throw new Error();
-					alert("✅ Bulk jobs posted successfully!");
-					window.location.href = "/my-jobs.html";
-				})
-				.catch(() => {
-					alert("❌ Failed to post jobs.");
-					multiBtn.disabled = false;
-					multiBtn.textContent = "Post Multiple Jobs";
-				});
 		});
 	</script>
 </body>

@@ -37,7 +37,7 @@ public class JobApplicationController {
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications() {
         return ResponseEntity.ok(jobService.getMyAppliedJobs());
     }
-
+    
     @GetMapping("/employer")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsForMyJobs() {
@@ -63,8 +63,4 @@ public class JobApplicationController {
         String email = userDetails.getUsername();
         return ResponseEntity.ok(jobApplicationService.withdrawApplication(id, email));
     }
-
-    
-    
-
 }

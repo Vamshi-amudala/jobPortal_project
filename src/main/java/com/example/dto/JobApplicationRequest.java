@@ -12,6 +12,5 @@ public class JobApplicationRequest {
     private String email;
     private String education;
     private String jobTitle;
-    private String resumeUrl;
     private String experience;
 }

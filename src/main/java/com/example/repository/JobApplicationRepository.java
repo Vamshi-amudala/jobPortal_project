@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
     List<JobApplication> findByApplicant(User user);
     List<JobApplication> findByJob(Job job);
+    List<JobApplication> findByJobIn(List<Job> jobs);
     List<JobApplication> findByApplicantAndStatus(User applicant, ApplicationStatus status);
     @Query("SELECT ja FROM JobApplication ja WHERE ja.job.employer = :employer")
     List<JobApplication> findByEmployer(@Param("employer") User employer);

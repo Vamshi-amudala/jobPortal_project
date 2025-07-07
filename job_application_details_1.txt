@@ -5,7 +5,7 @@ Email: vamshiamudala126@gmail.com
 Phone: 6302904268
 Education: Master of Computer Applications
 
-Job Title: Penetration Tester
+Job Title: SDE I
 Company: Microsoft
-Location: Hyderabad
-Experience Required: 4
+Location: Bangalore
+Experience Required: 0

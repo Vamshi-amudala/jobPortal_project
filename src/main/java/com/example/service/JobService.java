@@ -2,11 +2,7 @@ package com.example.service;
 
 import com.example.dto.JobApplicationResponse;
 import com.example.dto.JobDto;
-import com.example.entity.ApplicationStatus;
-import com.example.entity.Job;
-import com.example.entity.JobApplication;
-import com.example.entity.JobStatus;
-import com.example.entity.User;
+import com.example.entity.*;
 import com.example.exception.ResourceNotFoundException;
 import com.example.repository.JobApplicationRepository;
 import com.example.repository.JobRepository;
@@ -27,13 +23,12 @@ public class JobService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private JobApplicationRepository applicationRepository;
 
 	@Autowired
-	private JobApplicationRepository jobRepo;
-	@Autowired
 	private EmailService emailService;
-	@Autowired
-	private ResumeEmailService resumeEmailService;
 
 	private User getCurrentUser() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -82,20 +77,14 @@ public class JobService {
 		return jobRepository.save(job);
 	}
 
-
 	@Transactional
 	public void deleteJob(Long id) {
-	    Job job = jobRepository.findById(id)
-	        .orElseThrow(() -> new ResourceNotFoundException("Job with ID " + id + " not found"));
-
-	    // Delete all job applications linked to this job
-	    jobRepo.deleteByJob(job);
-
-	    // Now delete the job
-	    jobRepository.delete(job);
+		Job job = jobRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Job with ID " + id + " not found"));
+		applicationRepository.deleteByJob(job);
+		jobRepository.delete(job);
 	}
-	
-	
+
 	public Job updateJobStatus(Long id, JobStatus status) {
 		Job job = jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job not found with ID: " + id));
 		job.setStatus(status);
@@ -103,13 +92,13 @@ public class JobService {
 	}
 
 	public void updateStatus(Long applicationId, ApplicationStatus status) {
-		JobApplication app = jobRepo.findById(applicationId)
+		JobApplication app = applicationRepository.findById(applicationId)
 				.orElseThrow(() -> new RuntimeException("Application not found"));
 		if (app.getStatus() == ApplicationStatus.WITHDRAWN || app.getStatus() == ApplicationStatus.REJECTED) {
 			throw new IllegalStateException("Cannot change status of withdrawn/rejected applications.");
 		}
 		app.setStatus(status);
-		jobRepo.save(app);
+		applicationRepository.save(app);
 		emailService.sendApplicationStatusEmail(app.getApplicant().getEmail(), app.getJob().getTitle(),
 				app.getApplicant().getFullName(), status);
 	}
@@ -164,14 +153,15 @@ public class JobService {
 		return response;
 	}
 
-	public List<JobApplicationResponse> getMyAppliedJobs() {
-		User applicant = getCurrentUser();
-		List<JobApplication> applications = jobRepo.findByApplicant(applicant);
+	public List<JobApplicationResponse> getApplicationsForMyJobs() {
+		User employer = getCurrentUser();
+		List<Job> employerJobs = jobRepository.findByEmployer(employer);
+		List<JobApplication> applications = applicationRepository.findByJobIn(employerJobs);
 		return applications.stream().map(this::toJobApplicationResponse).collect(Collectors.toList());
 	}
 
 	public JobApplicationResponse updateApplicationStatus(Long appId, ApplicationStatus status) {
-		JobApplication application = jobRepo.findById(appId)
+		JobApplication application = applicationRepository.findById(appId)
 				.orElseThrow(() -> new RuntimeException("Application not found"));
 		User currentUser = getCurrentUser();
 		boolean isEmployer = application.getJob().getEmployer().getId().equals(currentUser.getId());
@@ -194,20 +184,21 @@ public class JobService {
 		}
 
 		application.setStatus(status);
-		JobApplication updated = jobRepo.save(application);
+		JobApplication updated = applicationRepository.save(application);
 		emailService.sendApplicationStatusEmail(application.getApplicant().getEmail(), application.getJob().getTitle(),
 				application.getApplicant().getFullName(), status);
 		return toJobApplicationResponse(updated);
 	}
-
-	public List<JobApplicationResponse> getApplicationsForMyJobs() {
-		User employer = getCurrentUser();
-		List<JobApplication> applications = jobRepo.findByEmployer(employer);
-		return applications.stream().map(this::toJobApplicationResponse).collect(Collectors.toList());
+	
+	public List<JobApplicationResponse> getMyAppliedJobs() {
+	    User applicant = getCurrentUser();
+	    List<JobApplication> applications = applicationRepository.findByApplicant(applicant);
+	    return applications.stream().map(this::toJobApplicationResponse).collect(Collectors.toList());
 	}
 
+
 	public JobApplication findApplicationById(Long id) {
-		return jobRepo.findById(id).orElseThrow(() -> new RuntimeException("Application not found with id: " + id));
+		return applicationRepository.findById(id).orElseThrow(() -> new RuntimeException("Application not found with id: " + id));
 	}
 
 	public List<JobDto> getJobsByLocation(String location) {
@@ -230,14 +221,12 @@ public class JobService {
 		String sortField = (sortBy != null) ? sortBy.toLowerCase() : "";
 		String sortOrder = (order != null) ? order.toLowerCase() : "asc";
 		switch (sortField) {
-		case "salary" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderBySalaryDesc()
-				: jobRepository.findAllOrderBySalaryAsc();
-		case "exp" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderByExperienceDesc()
-				: jobRepository.findAllOrderByExperienceAsc();
-		default -> jobs = jobRepository.findByStatus(JobStatus.OPEN);
+			case "salary" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderBySalaryDesc()
+					: jobRepository.findAllOrderBySalaryAsc();
+			case "exp" -> jobs = sortOrder.equals("desc") ? jobRepository.findAllOrderByExperienceDesc()
+					: jobRepository.findAllOrderByExperienceAsc();
+			default -> jobs = jobRepository.findByStatus(JobStatus.OPEN);
 		}
 		return jobs.stream().map(this::toDto).collect(Collectors.toList());
 	}
-	
-	
 }

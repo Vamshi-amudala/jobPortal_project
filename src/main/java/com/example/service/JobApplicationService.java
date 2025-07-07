@@ -39,8 +39,9 @@ public class JobApplicationService {
     private final EmailService email;
 
     public JobApplication applyForJob(JobApplicationRequest request) {
-    	 String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User applicant = userRepository.findByEmail(request.getEmail())
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User applicant = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Job> jobs = jobRepository.findByTitle(request.getJobTitle());
@@ -49,6 +50,10 @@ public class JobApplicationService {
         }
 
         Job job = jobs.get(0);
+        
+        if (applicant.getResumeUrl() == null || applicant.getResumeUrl().isEmpty()) {
+            throw new RuntimeException("Resume not uploaded. Please upload your resume before applying.");
+        }
 
         Optional<JobApplication> existingOpt = applicationRepository.findByApplicantAndJob(applicant, job);
 
@@ -56,16 +61,16 @@ public class JobApplicationService {
             JobApplication existing = existingOpt.get();
 
             if (existing.getStatus() == ApplicationStatus.APPLIED || existing.getStatus() == ApplicationStatus.SELECTED) {
-                throw new JobApplicationExistsException("You have already applied or have been selected for this job.");
+                throw new JobApplicationExistsException("You have already applied or been selected for this job.");
             }
-
+            
             applicationRepository.delete(existing);
         }
 
         JobApplication application = new JobApplication();
         application.setApplicant(applicant);
         application.setJob(job);
-        application.setResumeUrl(request.getResumeUrl());
+        application.setResumeUrl(applicant.getResumeUrl());
         application.setStatus(ApplicationStatus.APPLIED);
 
         JobApplication savedApp = applicationRepository.save(application);
@@ -74,7 +79,7 @@ public class JobApplicationService {
 
         return savedApp;
     }
-    
+
 
 
 //    public JobApplicationResponse applyForJobWithFile(JobApplicationRequest request, MultipartFile resumeFile) {

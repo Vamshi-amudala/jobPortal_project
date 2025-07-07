@@ -16,7 +16,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 	
     List<Job> findByEmployer(User employer);
 
-
     List<Job> findByStatus(JobStatus status);
 
     List<Job> findByLocation(String location);
@@ -37,6 +36,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query(value = "SELECT * FROM job ORDER BY CAST(salary AS UNSIGNED) ASC", nativeQuery = true)
     List<Job> findAllOrderBySalaryAsc();
+
+
    
 
 

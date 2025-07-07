@@ -14,79 +14,103 @@
 		}
 
 		.page-header {
-			background-color: #4f46e5;
+			background: linear-gradient(135deg, #6366f1, #ec4899);
 			color: #fff;
 			padding: 20px 40px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 		}
 
 		.container-box {
 			background-color: #ffffff;
-			border-radius: 12px;
-			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+			border-radius: 16px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 			padding: 30px;
 			margin-top: 30px;
 		}
 
 		.application {
-			border-bottom: 1px solid #e2e8f0;
-			padding: 20px 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 20px;
+			background-color: #f9fafb;
+			transition: all 0.2s ease-in-out;
 		}
 
-		.application:last-child {
-			border-bottom: none;
+		.application:hover {
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+			transform: translateY(-3px);
 		}
 
 		.applicant-name {
-			font-weight: 600;
-			font-size: 1.1rem;
+			font-weight: 700;
+			font-size: 1.25rem;
 			color: #1e293b;
+			margin-bottom: 5px;
 		}
 
 		.applicant-details,
 		.job-info {
 			font-size: 0.95rem;
 			color: #475569;
+			line-height: 1.6;
 		}
 
 		.status {
-			font-weight: 600;
-			margin: 10px 0;
+			font-weight: 700;
+			margin-top: 10px;
+			padding: 6px 12px;
+			border-radius: 6px;
+			display: inline-block;
 		}
 
 		.status-UNDER_REVIEW {
-			color: #eab308;
+			background-color: #fef3c7;
+			color: #b45309;
 		}
 
 		.status-SELECTED {
-			color: #16a34a;
+			background-color: #dcfce7;
+			color: #15803d;
 		}
 
 		.status-REJECTED {
-			color: #dc2626;
+			background-color: #fee2e2;
+			color: #b91c1c;
 		}
 
 		.resume-link {
 			display: inline-block;
 			margin-top: 10px;
-			background-color: #e0e7ff;
-			color: #1e40af;
-			padding: 6px 12px;
-			border-radius: 5px;
+			background-color: #6366f1;
+			color: #fff;
+			padding: 8px 14px;
+			border-radius: 8px;
 			text-decoration: none;
 			font-size: 0.875rem;
+			transition: background 0.2s;
 		}
 
 		.resume-link:hover {
-			background-color: #c7d2fe;
+			background-color: #4f46e5;
 		}
 
 		.status-select {
 			margin-top: 10px;
 			font-size: 0.875rem;
+			width: fit-content;
+			padding: 6px;
+			border-radius: 8px;
+			border: 1px solid #d1d5db;
 		}
 
 		.back-btn {
 			margin-bottom: 20px;
+		}
+
+		#filterJobSelect {
+			margin-bottom: 20px;
+			max-width: 300px;
 		}
 	</style>
 </head>
@@ -102,19 +126,24 @@
 	<main class="container">
 		<div class="container-box">
 			<h2 class="mb-4 text-primary">Your Posted Job Applications</h2>
+			<select id="filterJobSelect" class="form-select">
+				<option value="">All Jobs</option>
+			</select>
 			<div id="applicationsContainer">Loading applications...</div>
 		</div>
 	</main>
 
 	<script>
+		let allApplications = [];
+
 		function updateStatus(appId, selectEl) {
 			const status = selectEl.value;
 			if (!status) return;
 
 			fetch(`/api/applications/${appId}/status`, {
 				method: 'PUT',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({status}),
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ status }),
 				credentials: 'include'
 			})
 				.then(res => {
@@ -128,41 +157,60 @@
 				.catch(() => alert("❌ Error updating status."));
 		}
 
+		function displayApplications(apps) {
+			const container = document.getElementById('applicationsContainer');
+			if (!apps.length) {
+				container.innerHTML = '<p class="text-muted">No applications received yet.</p>';
+				return;
+			}
+			container.innerHTML = apps.map(app => `
+				<div class="application">
+					<div class="applicant-name">${app.applicant.fullName} <span class="text-secondary">(${app.applicant.email})</span></div>
+					<div class="applicant-details">
+						📞 ${app.applicant.phone} <br/>
+						🎓 ${app.applicant.education}
+					</div>
+					<div class="job-info mt-2">
+						💼 <strong>${app.job.title}</strong> at <strong>${app.job.company}</strong><br/>
+						📍 ${app.job.location} | 🕒 ${app.job.exp} years
+					</div>
+					<div class="status status-${app.status}">Status: ${app.status}</div>
+					<a class="resume-link" href="${app.resumeUrl}" target="_blank">📄 View Resume</a>
+					<select class="form-select status-select" onchange="updateStatus(${app.id}, this)">
+						<option value="">-- Update Status --</option>
+						<option value="UNDER_REVIEW">Mark Under Review</option>
+						<option value="SELECTED">Select</option>
+						<option value="REJECTED">Reject</option>
+					</select>
+				</div>
+			`).join('');
+		}
+
 		function loadApplications() {
-			fetch('/api/applications/employer', {credentials: 'include'})
+			fetch('/api/applications/employer', { credentials: 'include' })
 				.then(res => res.json())
 				.then(apps => {
-					const container = document.getElementById('applicationsContainer');
-					if (!apps.length) {
-						container.innerHTML = '<p class="text-muted">No applications received yet.</p>';
-						return;
-					}
+					allApplications = apps;
+					displayApplications(apps);
 
-					container.innerHTML = apps.map(app => `
-            <div class="application">
-              <div class="applicant-name">${app.applicant.fullName} (${app.applicant.email})</div>
-              <div class="applicant-details">
-                Phone: ${app.applicant.phone}<br/>
-                Education: ${app.applicant.education}
-              </div>
-              <div class="job-info mt-2">
-                Applied for: <strong>${app.job.title}</strong> at <strong>${app.job.company}</strong><br/>
-                Location: ${app.job.location} | Experience: ${app.job.exp} years
-              </div>
-              <div class="status status-${app.status}">Status: ${app.status}</div>
-              <a class="resume-link" href="${app.resumeUrl}" target="_blank">📄 View Resume</a>
-              <select class="form-select status-select w-auto" onchange="updateStatus(${app.id}, this)">
-                <option value="">-- Update Status --</option>
-                <option value="UNDER_REVIEW">Mark Under Review</option>
-                <option value="SELECTED">Select</option>
-                <option value="REJECTED">Reject</option>
-              </select>
-            </div>
-          `).join('');
-				})
-				.catch(() => {
-					document.getElementById('applicationsContainer').innerHTML = '<p class="text-danger">Failed to load applications.</p>';
+					const jobSelect = document.getElementById("filterJobSelect");
+					const jobTitles = [...new Set(apps.map(app => app.job.title))];
+					jobTitles.forEach(title => {
+						const option = document.createElement("option");
+						option.value = title;
+						option.textContent = title;
+						jobSelect.appendChild(option);
+					});
 				});
+
+			document.getElementById("filterJobSelect").addEventListener("change", function () {
+				const selected = this.value;
+				if (selected === "") {
+					displayApplications(allApplications);
+				} else {
+					displayApplications(allApplications.filter(app => app.job.title === selected));
+				}
+			});
 		}
 
 		window.onload = loadApplications;
