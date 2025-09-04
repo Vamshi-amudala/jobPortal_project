@@ -61,6 +61,14 @@ public class JobController {
         Job updatedJob = jobService.updateJob(id, dto);
         return ResponseEntity.ok(toDto(updatedJob));
     }
+    
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<JobDto> getJobById(@PathVariable Long id) {
+        Job job = jobService.getJobById(id); // <-- check this method
+        return ResponseEntity.ok(toDto(job));
+    }
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('EMPLOYER')")

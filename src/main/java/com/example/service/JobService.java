@@ -219,4 +219,10 @@ public class JobService {
 		}
 		return jobs.stream().map(this::toDto).collect(Collectors.toList());
 	}
+
+	public Job getJobById(Long id) {
+	    return jobRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Job not found with id " + id));
+	}
+
 }
