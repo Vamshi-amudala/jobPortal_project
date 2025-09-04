@@ -15,6 +15,7 @@ public class Job {
     private Long id;
 
     private String title;
+    @Column(length = 2000)
     private String description;
     private String location;
     private String company;

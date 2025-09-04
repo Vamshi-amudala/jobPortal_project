@@ -2,13 +2,13 @@ package com.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.context.SecurityContext;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ import com.example.service.AuthService;
 import java.util.*;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+//import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -34,8 +34,8 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     
-    @Autowired
-    private AuthenticationManager authenticationManager;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponseDto> registerUser(
@@ -43,27 +43,17 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerUser(dto));
     }
 
-    
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto dto, HttpServletRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())
-        );
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+    public ResponseEntity<AuthResponseDto> login(
+            @Valid @RequestBody LoginDto dto,
+            HttpServletRequest request) {
         
-        String role = authentication.getAuthorities().stream()
-        	    .findFirst()
-        	    .map(GrantedAuthority::getAuthority)
-        	    .map(r -> r.replace("ROLE_", ""))
-        	    .orElse("USER");
+        // delegate login logic to AuthService
+        AuthResponseDto response = authService.login(dto, request);
 
-        return ResponseEntity.ok(new AuthResponseDto("Login successful", dto.getEmail(),role));
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
@@ -81,7 +71,7 @@ public class AuthController {
 
     @PostMapping("/reset-password-with-otp")
     public ResponseEntity<String> resetPasswordWithOtp(@Valid @RequestBody ResetPasswordDto dto) {
-        authService.verifyOtpAndResetPassword(dto.getEmail(), dto.getOtp(), dto.getNewPassword());
+        authService.verifyOtpAndResetPassword(dto.getEmail(), dto.getOtp(), dto.getNewPassword(), dto.getConfirmPassword());
         return ResponseEntity.ok("Password has been reset successfully.");
     }
 

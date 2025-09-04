@@ -1,6 +1,8 @@
 package com.example.dto;
 
 import com.example.entity.JobStatus;
+
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class JobResponseDto {
     private Long id;
     private String title;
+    @Column(length = 2000)
     private String description;
     private String location;
     private String company;

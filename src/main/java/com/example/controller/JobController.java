@@ -21,14 +21,7 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
-    @PostMapping("/multiple")
-    @PreAuthorize("hasRole('EMPLOYER')")
-    public ResponseEntity<List<Job>> addMultipleJobs(
-        @RequestParam String email,
-        @RequestBody List<Job> jobs) {
-        List<Job> savedJobs = jobService.postMultipleJobs(email, jobs);
-        return ResponseEntity.ok(savedJobs);
-    }
+ 
 
     @PostMapping
     @PreAuthorize("hasRole('EMPLOYER')")

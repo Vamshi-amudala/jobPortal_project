@@ -4,6 +4,7 @@ import com.example.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -97,6 +98,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+	        .cors() // ✅ enable CORS support
+	        .and()
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -107,7 +110,9 @@ public class SecurityConfig {
                     "/swagger-ui/**", "/v3/api-docs/**",
                     "/css/**", "/js/**", "/images/**"
                 ).permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
+                
             )
             .formLogin(form -> form
                 .loginPage("/login.html")

@@ -49,16 +49,6 @@ public class JobService {
 		return jobRepository.save(job);
 	}
 
-	public List<Job> postMultipleJobs(String email, List<Job> jobs) {
-		User employer = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Employer not found"));
-		for (Job job : jobs) {
-			job.setEmployer(employer);
-			if (job.getStatus() == null) {
-				job.setStatus(JobStatus.OPEN);
-			}
-		}
-		return jobRepository.saveAll(jobs);
-	}
 
 	public List<Job> getJobsByEmployer() {
 		User employer = getCurrentUser();
