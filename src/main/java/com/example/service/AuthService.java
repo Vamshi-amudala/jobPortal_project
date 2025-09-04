@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.dto.AuthResponseDto;
 import com.example.dto.LoginDto;
+import com.example.dto.RegistrationResponseDto;
 import com.example.dto.UserRegistrationDto;
 import com.example.entity.User;
 import com.example.exception.EmailAlreadyExistsException;
@@ -36,28 +37,28 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    public RegistrationResponseDto registerUser(UserRegistrationDto dto) {
+        String cleanEmail = dto.getEmail().trim().toLowerCase();
 
-    public String registerUser(UserRegistrationDto dto) {
-    	
-    	String cleanEmail = dto.getEmail().trim().toLowerCase();
-    	try {
-    	    if (userRepository.existsByEmail(cleanEmail)) {
-    	        throw new EmailAlreadyExistsException("Email already registered, please use different email..!");
-    	    }
+        if (userRepository.existsByEmail(cleanEmail)) {
+            throw new EmailAlreadyExistsException(
+                "Email already registered, please use a different email!"
+            );
+        }
 
-    	    User user = new User();
-    	    user.setFullName(dto.getFullName());
-    	    user.setEmail(cleanEmail);
-    	    user.setPassword(passwordEncoder.encode(dto.getPassword()));
-    	    user.setRole(dto.getRole());
+        User user = new User();
+        user.setFullName(dto.getFullName().trim());
+        user.setEmail(cleanEmail);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRole(dto.getRole());
 
-    	    userRepository.save(user);
-    	    return "User registered successfully as " + dto.getRole();
-    	} catch (Exception e) {
-    	    e.printStackTrace(); // to see the real reason
-    	    throw new RuntimeException("Registration failed: " + e.getMessage());
-    	}
+        userRepository.save(user);
 
+        return new RegistrationResponseDto(
+            "User registered successfully as " + dto.getRole().name(),
+            user.getEmail(),
+            user.getRole().name()
+        );
     }
 
 

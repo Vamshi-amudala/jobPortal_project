@@ -1,12 +1,11 @@
 package com.example.dto;
 
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class AuthResponseDto {
+public class RegistrationResponseDto {
     private String message;
     private String email;
     private String role;

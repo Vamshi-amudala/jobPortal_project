@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.AuthResponseDto;
 import com.example.dto.LoginDto;
+import com.example.dto.RegistrationResponseDto;
 import com.example.dto.ResetPasswordDto;
 import com.example.dto.UserRegistrationDto;
 import com.example.service.AuthService;
@@ -36,10 +38,11 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegistrationDto dto) {
-        String result = authService.registerUser(dto);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<RegistrationResponseDto> registerUser(
+            @Valid @RequestBody UserRegistrationDto dto) {
+        return ResponseEntity.ok(authService.registerUser(dto));
     }
+
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto dto, HttpServletRequest request) {
@@ -52,8 +55,14 @@ public class AuthController {
 
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+        
+        String role = authentication.getAuthorities().stream()
+        	    .findFirst()
+        	    .map(GrantedAuthority::getAuthority)
+        	    .map(r -> r.replace("ROLE_", ""))
+        	    .orElse("USER");
 
-        return ResponseEntity.ok(new AuthResponseDto("Login successful", dto.getEmail()));
+        return ResponseEntity.ok(new AuthResponseDto("Login successful", dto.getEmail(),role));
     }
 
     @PostMapping("/forgot-password")
