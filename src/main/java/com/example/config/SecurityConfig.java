@@ -103,7 +103,7 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/", "/index.html", "/register.html", "/login.html","forgot-password.html","reset-password.html",
+                    "/", "/index.html", "/register.html", "/login.html","/forgot-password.html","/reset-password.html",
                     "/api/auth/register", "/api/auth/login",
                     "/api/auth/forgot-password", "/api/auth/reset-password",
                     "/api/auth/send-otp", "/api/auth/reset-password-with-otp",

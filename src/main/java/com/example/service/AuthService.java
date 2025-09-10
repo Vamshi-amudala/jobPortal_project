@@ -129,20 +129,19 @@ public class AuthService {
             throw new BadCredentialsException("OTP has expired");
         }
 
-        // Check if passwords match
+       
         if (!newPassword.equals(confirmPassword)) {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
-        // Set the password once
+       
         user.setPassword(passwordEncoder.encode(newPassword));
 
-        // Clear OTP fields
+   
         user.setOtpCode(null);
         user.setOtpExpiration(null);
         userRepository.save(user);
 
-        // Send confirmation email
         emailService.sendResetPasswordConfirmationEmail(user.getEmail());
     }
 
