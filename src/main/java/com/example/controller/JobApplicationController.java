@@ -3,7 +3,11 @@ package com.example.controller;
 import com.example.dto.JobApplicationRequest;
 import com.example.dto.JobApplicationResponse;
 import com.example.entity.ApplicationStatus;
+import com.example.entity.*;
 import com.example.entity.JobApplication;
+import com.example.repository.JobApplicationRepository;
+import com.example.repository.JobRepository;
+import com.example.repository.UserRepository;
 import com.example.service.JobApplicationService;
 import com.example.service.JobService;
 import jakarta.validation.Valid;
@@ -11,11 +15,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.Map;
 
 @RestController
@@ -25,6 +30,9 @@ public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
     private final JobService jobService;
+    private final UserRepository userRepository;
+    private final JobApplicationRepository jobApplicationRepository;
+    private final JobRepository jobRepository;
 
     @PostMapping("/apply")
     public ResponseEntity<JobApplicationResponse> applyForJob(@RequestBody @Valid JobApplicationRequest request) {
@@ -36,6 +44,28 @@ public class JobApplicationController {
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications() {
         return ResponseEntity.ok(jobService.getMyAppliedJobs());
+    }
+    
+    @GetMapping("/available")
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public List<Job> getAvailableJobs(Authentication auth) {
+        User user = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Long> appliedJobIds = jobApplicationRepository
+                .findByApplicant_Id(user.getId()).stream()
+                .filter(app -> List.of(
+                        ApplicationStatus.APPLIED.name(),
+                        ApplicationStatus.UNDER_REVIEW.name(),
+                        ApplicationStatus.INTERVIEWING.name(),
+                        ApplicationStatus.SELECTED.name()
+                ).contains(app.getStatus().name()))
+                .map(app -> app.getJob().getId())
+                .toList();
+
+        return jobRepository.findAll().stream()
+                .filter(job -> !appliedJobIds.contains(job.getId()))
+                .toList();
     }
     
     @GetMapping("/employer")

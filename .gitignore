@@ -32,7 +32,21 @@ build/
 ### VS Code ###
 .vscode/
 
-# Environment file
+### Environment file ###
 .env
 
-.txt
+### Logs ###
+*.log
+
+### OS junk ###
+.DS_Store
+Thumbs.db
+
+### Compiled files ###
+*.class
+
+### Block text & docs completely ###
+*.txt
+*.pdf
+*.doc
+*.docx

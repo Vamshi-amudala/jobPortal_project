@@ -63,7 +63,7 @@ public class JobController {
     }
     
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public ResponseEntity<JobDto> getJobById(@PathVariable Long id) {
         Job job = jobService.getJobById(id); // <-- check this method
         return ResponseEntity.ok(toDto(job));

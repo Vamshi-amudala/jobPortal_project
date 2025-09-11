@@ -98,10 +98,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-	        .cors() // ✅ enable CORS support
-	        .and()
+            .cors()
+            .and()
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers("/uploads/resumes/**").permitAll()
                 .requestMatchers(
                     "/", "/index.html", "/register.html", "/login.html","/forgot-password.html","/reset-password.html",
                     "/api/auth/register", "/api/auth/login",
@@ -112,11 +113,10 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
-                
             )
             .formLogin(form -> form
                 .loginPage("/login.html")
-                .defaultSuccessUrl("/dashboard", true) // optional
+                .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
             )
             .exceptionHandling(exception -> exception
@@ -124,10 +124,14 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin())
             );
 
         return http.build();
     }
+
 
     
 }
