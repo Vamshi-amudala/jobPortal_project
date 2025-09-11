@@ -78,7 +78,7 @@ public class ResumeController {
         }
     }
     
-    // 🆕 NEW ENDPOINT: View/Download resume file
+   
     @GetMapping("/view/{filename}")
     public ResponseEntity<Resource> viewResume(@PathVariable String filename, Authentication auth) {
         try {
@@ -86,17 +86,17 @@ public class ResumeController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            // Security check: ensure the user owns this file
+           
             if (user.getResumeUrl() == null || !user.getResumeUrl().contains(filename)) {
                 return ResponseEntity.notFound().build();
             }
             
-            // Resolve file path
+           
             Path filePath = Paths.get(resumeDir).resolve(filename);
             Resource resource = new UrlResource(filePath.toUri());
             
             if (resource.exists() && resource.isReadable()) {
-                // Determine content type based on file extension
+               
                 String contentType = determineContentType(filename);
                 
                 return ResponseEntity.ok()
@@ -158,5 +158,5 @@ public class ResumeController {
             return ResponseEntity.status(500).build();
         }
     }
-
+    
 }
